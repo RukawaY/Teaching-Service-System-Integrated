@@ -38,7 +38,7 @@ public class AttendanceController {
             if (result) {
                 return ResponseEntity.ok("考勤成绩处理成功");
             } else {
-                return ResponseEntity.badRequest().body("考勤成绩处理失败");
+                return ResponseEntity.badRequest().body("未找到该学生对应课程的成绩记录");
             }
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

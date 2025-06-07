@@ -149,7 +149,7 @@ const allCards = ref([
 // I've updated them to be student-only as per the original template, but this can be adjusted if teachers also need access.
 allCards.value = allCards.value.map(card => {
   if (card.id === 'uploadResource' || card.id === 'viewResource') {
-    return { ...card, userTypes: ['student'] };
+    return { ...card, userTypes: ['student','teacher'] };
   }
   return card;
 });

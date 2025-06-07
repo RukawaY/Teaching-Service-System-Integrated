@@ -21,10 +21,6 @@ public class AttendanceService {
      * @param teacherName 教师姓名
      * @return 课程名称列表
      */
-    public List<String> getTeacherCourses(String teacherName) {
-        String sql = "SELECT course_name FROM Course WHERE teacher_name = ?";
-        return jdbcTemplate.queryForList(sql, String.class, teacherName);
-    }
 
     /**
      * 完整考勤成绩处理（修改：接收studentId代替studentName）
@@ -36,9 +32,6 @@ public class AttendanceService {
         if (courseId == null) {
             throw new RuntimeException("未找到对应课程: " + courseName);
         }
-
-        // 2. 直接使用传入的studentId（移除原通过姓名查询的逻辑）
-        // 原代码：Integer studentId = getStudentIdByStudentName(studentName); 已删除
 
         // 3. 通过course_id和student_id获取grade_id（保持逻辑，参数调整为直接使用studentId）
         Integer gradeId = getGradeIdByCourseAndStudent(courseId, studentId);
@@ -60,16 +53,6 @@ public class AttendanceService {
         String sql = "SELECT course_id FROM Course WHERE course_name = ?";
         try {
             return jdbcTemplate.queryForObject(sql, Integer.class, courseName);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    // 辅助方法：通过学生名获取student_id
-    private Integer getStudentIdByStudentName(String studentName) {
-        String sql = "SELECT user_id FROM User WHERE name = ? AND role = 's'";
-        try {
-            return jdbcTemplate.queryForObject(sql, Integer.class, studentName);
         } catch (Exception e) {
             return null;
         }
@@ -100,22 +83,40 @@ public class AttendanceService {
         jdbcTemplate.update(updateSql, newScore, gradeId);
     }
 
-    // 辅助方法：插入GradeComponent记录
+    // 辅助方法：插入或更新GradeComponent记录
     private void insertGradeComponent(int gradeId, int attendanceScore, int attendanceRatio) {
-        GradeComponent component = new GradeComponent();
-        component.setGradeId(gradeId);
-        component.setComponentName("考勤成绩");
-        component.setComponentType(0); // 固定为考勤类型
-        component.setRatio(attendanceRatio);
-        component.setScore(attendanceScore);
 
-        String insertSql = "INSERT INTO grade_component (grade_id, component_name, component_type, ratio, score) VALUES (?, ?, ?, ?, ?)";
-        jdbcTemplate.update(insertSql,
-                component.getGradeId(),
-                component.getComponentName(),
-                component.getComponentType(),
-                component.getRatio(),
-                component.getScore());
+        // 1. 查询是否存在相同gradeId、考勤类型的成绩组件
+        String selectSql = "SELECT component_id FROM GradeComponent WHERE grade_id = ? AND component_name = ? AND component_type = '0'";
+        List<Integer> componentIds = jdbcTemplate.query(
+            selectSql,
+            new Object[]{gradeId, "考勤成绩"},
+            (rs, rowNum) -> rs.getInt("component_id")
+        );
+
+        if (!componentIds.isEmpty()) {
+            // 2. 存在记录则更新ratio和score
+            Integer componentId = componentIds.get(0);
+            String updateSql = "UPDATE GradeComponent SET ratio = ?, score = ? WHERE component_id = ?";
+            jdbcTemplate.update(updateSql, attendanceRatio, attendanceScore, componentId);
+        } else {
+            // 3. 不存在记录则插入新记录
+            GradeComponent component = new GradeComponent();
+            component.setGradeId(gradeId);
+            component.setComponentName("考勤成绩");
+
+            component.setRatio(attendanceRatio);
+            component.setScore(attendanceScore);
+
+            String insertSql = "INSERT INTO GradeComponent (grade_id, component_name, component_type, ratio, score) VALUES (?, ?, '0', ?, ?)";
+            jdbcTemplate.update(insertSql,
+                    component.getGradeId(),
+                    component.getComponentName(),
+
+                    component.getRatio(),
+                    component.getScore());
+        }
+
     }
 
     /**
@@ -131,12 +132,7 @@ public class AttendanceService {
             course.setCourseName(rs.getString("course_name"));
             course.setCourseDescription(rs.getString("course_description"));
             course.setTeacherId(rs.getInt("teacher_id"));
-            course.setCredit(rs.getDouble("credit"));
-            course.setClassTime(rs.getString("class_time"));
-            course.setClassroom(rs.getString("classroom"));
-            course.setCapacity(rs.getInt("capacity"));
-            course.setAvailableCapacity(rs.getInt("available_capacity"));
-            course.setCategory(rs.getString("category"));
+            
             return course;
         }, teacherId);
     }
