@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios'
 
 // 配置axios
 const request = axios.create({
-  baseURL: 'http://localhost:8080',  // 端口改为8081
+  baseURL: 'http://localhost:8080',  // 端口改为8080
   timeout: 5000
 })
 
