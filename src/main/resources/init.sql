@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS Apply (
     old_score INT NOT NULL,
     new_score INT NOT NULL,
     reason VARCHAR(255) NOT NULL,
-    audit_reason VARCHAR(255) NOT NULL,
+    audit_reason VARCHAR(255),
     audit_status ENUM('0', '1', '2') DEFAULT '0',  -- 0-待审核, 1-已通过, 2-已拒绝
     apply_time DATETIME DEFAULT CURRENT_TIMESTAMP,
     review_time DATETIME,
@@ -291,14 +291,16 @@ INSERT INTO course_selection (student_id, section_id) VALUES
 (4, 1),
 (4, 2),
 (5, 2),
-(6, 3);
+(6, 3),
+(4, 4);
 
 -- 基础成绩
 INSERT INTO GradeBase (student_id, course_id, section_id, score, gpa, submit_status) VALUES
 (4, 1, 1, 90, 4.0, '1'),
 (4, 2, 2, 85, 3.7, '1'),
 (5, 2, 2, 78, 3.0, '1'),
-(6, 3, 3, 88, 3.8, '0');
+(6, 3, 3, 88, 3.8, '0'),
+(4, 4, 4, 91, 4.0, '1');
 
 -- 成绩组成
 INSERT INTO GradeComponent (component_name, grade_id, component_type, ratio, score) VALUES
@@ -354,51 +356,6 @@ INSERT INTO curriculum (major_id, curriculum_json) VALUES
                     {
                         "course_name": "计算机组成原理",
                         "credit": 3.5
-                    },
-                    {
-                        "course_name": "操作系统",
-                        "credit": 4.0
-                    }
-                ]
-            }
-        ]');
-
--- -- 个人培养方案
-INSERT INTO personal_curriculum (student_id, curriculum_json) VALUES
-    (4, '[
-            {
-                "section_credit": 11.5,
-                "section_name": "专业必修课程",
-                "course_list": [
-                    {
-                        "course_name": "数据结构",
-                        "credit": 4.0
-                    },
-                    {
-                        "course_name": "计算机组成原理",
-                        "credit": 3.5
-                    },
-                    {
-                        "course_name": "操作系统",
-                        "credit": 4.0
-                    }
-                ]
-            }
-        ]');
-        
-INSERT INTO personal_curriculum (student_id, curriculum_json) VALUES
-    (5, '[
-            {
-                "section_credit": 11,
-                "section_name": "专业必修课程",
-                "course_list": [
-                    {
-                        "course_name": "程序设计基础",
-                        "credit": 3.0
-                    },
-                    {
-                        "course_name": "数据结构",
-                        "credit": 4.0
                     },
                     {
                         "course_name": "操作系统",
