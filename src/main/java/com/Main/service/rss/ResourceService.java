@@ -38,5 +38,5 @@ public interface ResourceService {
      * @param courseId 课程ID
      * @return 资源列表
      */
-    ResponseEntity<?> getDirectory(String courseId);
+    ResponseEntity<?> getDirectory(Long courseId);
 }

@@ -85,6 +85,7 @@ public class AttendanceService {
 
     // 辅助方法：插入或更新GradeComponent记录
     private void insertGradeComponent(int gradeId, int attendanceScore, int attendanceRatio) {
+
         // 1. 查询是否存在相同gradeId、考勤类型的成绩组件
         String selectSql = "SELECT component_id FROM GradeComponent WHERE grade_id = ? AND component_name = ? AND component_type = '0'";
         List<Integer> componentIds = jdbcTemplate.query(
@@ -115,6 +116,7 @@ public class AttendanceService {
                     component.getRatio(),
                     component.getScore());
         }
+
     }
 
     /**
