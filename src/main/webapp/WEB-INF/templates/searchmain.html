@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>供货商搜索系统</title>
+    <link rel="stylesheet" href="/static/css/searchmain.css">
+</head>
+<body>
+    <div class="page-container">
+        <header>
+            <div class="header-container">
+                <div class="logo">
+                    <h1>供货商智能搜索系统</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="/">首页</a></li>
+                        <li><a href="/">搜索服务</a></li>
+                        <li><a href="/profile">个人中心</a></li>
+                        <li><a href="#">帮助中心</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+        <div class="search-area">
+            <h2>欢迎使用供货商智能搜索系统</h2>
+            <div class="search-box">
+                <select id="search-type">
+                    <option value="products">商品</option>
+                    <option value="suppliers">供货商</option>
+                    <option value="categories">分类</option>
+                </select>
+                <input type="text" id="search-bar" placeholder="请输入关键词...">
+                <button id="search-btn">搜索</button>
+            </div>
+            <div class="search-links">
+                <a href="advanced-search.html">高级搜索</a>
+            </div>
+        </div>
+        <div class="system-introduction">
+            <p>
+                供货商智能搜索系统致力于为用户提供高效、精准的商品和供货商搜索服务。通过强大的数据分析能力，
+                我们帮助厂家快速找到最合适的供货商，优化采购流程，提升供应链效率。
+            </p>
+        </div>
+    </div>
+    <footer>
+        <p>© 2024 智能供货商选择系统 - 提供精准的供货商搜索服务</p>
+    </footer>
+
+    <script>
+        // 搜索按钮点击事件
+        document.getElementById("search-btn").addEventListener("click", function () {
+            const query = document.getElementById("search-bar").value; // 获取搜索输入框内容
+            const searchType = document.getElementById("search-type").value; // 获取选择的搜索类型
+
+            // 调用后端接口 - 预留逻辑
+            /*
+            fetch('https://api.example.com/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    query: query,
+                    type: searchType,
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('搜索结果:', data);
+                    // TODO: 在页面上渲染搜索结果
+                })
+                .catch(error => {
+                    console.error('搜索接口调用出错:', error);
+                });
+            */
+
+            // 暂时仅打印搜索内容，便于调试
+            console.log("搜索关键词:", query, "搜索类型:", searchType);
+        });
+    </script>
+</body>
+</html>

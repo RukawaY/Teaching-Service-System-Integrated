@@ -6,7 +6,7 @@
         <Operation />
       </el-icon>
       <el-icon size="30px" v-if="!router.currentRoute.value.path.startsWith('/online_test/test') && router.currentRoute.value.path !== '/home' && user !== 'invalid'" @click="goToHome()" class="back-icon"><HomeFilled /></el-icon>
-      <el-icon size="30px" v-if="router.currentRoute.value.path !== '/home'" @click="goBack()" class="back-icon"><Back /></el-icon>
+      <el-icon size="30px" v-if="router.currentRoute.value.path !== '/home' && user !== 'invalid'" @click="goBack()" class="back-icon"><Back /></el-icon>
       <span class="system-name">{{ pageTitle }}</span>
       <span class="sub-system-name" v-if="router.currentRoute.value.path === '/home' && user !== 'invalid'">{{ relfect_name(activeModule.get()) }}</span>
     </div>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高级搜索</title>
+    <link rel="stylesheet" href="advanced-search.css">
+</head>
+<body>
+    <div class="page-container">
+        <!-- 顶部导航栏 -->
+        <header>
+            <div class="header-container">
+                <div class="logo">
+                    <h1>供货商智能搜索系统</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#">首页</a></li>
+                        <li><a href="#">搜索服务</a></li>
+                        <li><a href="#">个人中心</a></li>
+                        <li><a href="#">帮助中心</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <!-- 主内容 -->
+        <div class="main-container">
+            <!-- 左侧搜索区域 -->
+            <div class="search-area">
+                <h2>高级搜索</h2>
+                <div class="search-form" id="search-form">
+                    <!-- 初始三栏条件 -->
+                    <div class="form-group">
+                        <select class="condition-type">
+                            <option value="product">商品</option> <!-- 修改 -->
+                            <option value="region">地区</option>
+                            <option value="supply">供货量</option>
+                            <option value="rating">评分</option>
+                            <option value="min-price">最低价格</option>
+                            <option value="max-price">最高价格</option>
+                            <option value="supplier-type">供货商类型</option>
+                        </select>
+                        <select class="operator">
+                            <option value="AND">AND</option>
+                            <option value="OR">OR</option>
+                            <option value="NOT">NOT</option>
+                        </select>
+                        <input type="text" class="input-field" placeholder="请输入内容">
+                        <button class="add-btn">+</button>
+                        <button class="remove-btn">-</button>
+                    </div>
+                    <div class="form-group">
+                        <select class="condition-type">
+                            <option value="product">商品</option>
+                            <option value="region">地区</option>
+                            <option value="supply">供货量</option>
+                            <option value="rating">评分</option>
+                            <option value="min-price">最低价格</option>
+                            <option value="max-price">最高价格</option>
+                            <option value="supplier-type">供货商类型</option>
+                        </select>
+                        <select class="operator">
+                            <option value="AND">AND</option>
+                            <option value="OR">OR</option>
+                            <option value="NOT">NOT</option>
+                        </select>
+                        <input type="text" class="input-field" placeholder="请输入内容">
+                        <button class="add-btn">+</button>
+                        <button class="remove-btn">-</button>
+                    </div>
+                    <div class="form-group">
+                        <select class="condition-type">
+                            <option value="product">商品</option>
+                            <option value="region">地区</option>
+                            <option value="supply">供货量</option>
+                            <option value="rating">评分</option>
+                            <option value="min-price">最低价格</option>
+                            <option value="max-price">最高价格</option>
+                            <option value="supplier-type">供货商类型</option>
+                        </select>
+                        <select class="operator">
+                            <option value="AND">AND</option>
+                            <option value="OR">OR</option>
+                            <option value="NOT">NOT</option>
+                        </select>
+                        <input type="text" class="input-field" placeholder="请输入内容">
+                        <button class="add-btn">+</button>
+                        <button class="remove-btn">-</button>
+                    </div>
+                </div>
+                <div class="time-group">
+                    <label for="start-date">时间范围：</label>
+                    <input type="date" id="start-date">
+                    <span>至</span>
+                    <input type="date" id="end-date">
+                </div>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="option-1"> 热销商品</label>
+                    <label><input type="checkbox" id="option-2"> 优质供货商</label>
+                    <label><input type="checkbox" id="option-3"> 分类扩展</label>
+                    <label><input type="checkbox" id="option-4"> 快速发货</label>
+                    <label><input type="checkbox" id="option-5"> 售后保障</label>
+                </div>
+                <div class="btn-group">
+                    <button class="reset-btn">重置条件</button>
+                    <button class="search-btn">搜索</button>
+                </div>
+            </div>
+
+            <!-- 右侧边栏 -->
+            <div class="sidebar">
+                <h3>高级搜索使用方法：</h3>
+                <p>支持使用逻辑运算符 AND、OR、NOT 进行多条件组合搜索。</p>
+                <p>例如：条件 1 选择“商品”，条件 2 选择“地区”，并选择 AND 运算，系统将查找符合两个条件的结果。</p>
+                <p>最低价格和最高价格作为独立条件，用户可以根据需要选择使用。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>© 2024 智能供货商选择系统 - 提供精准的供货商搜索服务</p>
+    </footer>
+
+    <script>
+        // 动态添加/删除条件行
+        const form = document.getElementById('search-form');
+
+        form.addEventListener('click', function (event) {
+            const target = event.target;
+
+            if (target.classList.contains('add-btn')) {
+                const newCondition = document.createElement('div');
+                newCondition.className = 'form-group';
+                newCondition.innerHTML = `
+                    <select class="condition-type">
+                        <option value="product">商品</option>
+                        <option value="region">地区</option>
+                        <option value="supply">供货量</option>
+                        <option value="rating">评分</option>
+                        <option value="min-price">最低价格</option>
+                        <option value="max-price">最高价格</option>
+                        <option value="supplier-type">供货商类型</option>
+                    </select>
+                    <select class="operator">
+                        <option value="AND">AND</option>
+                        <option value="OR">OR</option>
+                        <option value="NOT">NOT</option>
+                    </select>
+                    <input type="text" class="input-field" placeholder="请输入内容">
+                    <button class="add-btn">+</button>
+                    <button class="remove-btn">-</button>
+                `;
+                form.appendChild(newCondition);
+            } else if (target.classList.contains('remove-btn')) {
+                target.parentElement.remove();
+            }
+        });
+
+        // 限制最低价格、最高价格和评分的输入为数字
+        form.addEventListener('input', (event) => {
+            if (event.target.classList.contains('input-field')) {
+                const conditionType = event.target.previousElementSibling.previousElementSibling.value;
+                if (['min-price', 'max-price', 'rating'].includes(conditionType)) {
+                    event.target.type = 'number';
+                    event.target.placeholder = '请输入数字';
+                } else {
+                    event.target.type = 'text';
+                    event.target.placeholder = '请输入内容';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>个人主页</title>
+	<link rel="stylesheet" type="text/css" href="/static/css/style.css">
+	<link href="/static/css/bootstrap.css" rel="stylesheet">
+</head>
+<body>
+	<header>
+		<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+			<h5 class="my-0 mr-md-auto font-weight-normal"><a href="http://localhost:8000">回到首页</a></h5>
+			<nav class="my-2 mr-md-3">
+				<a class="p-2 text-dark" target="_blank" href="https://www.liaoxuefeng.com/wiki/1252599548343744">Learn</a>
+			</nav>
+			{% if user==null %}
+			<a href="/signin" class="btn btn-outline-primary">Sign In</a>
+			{% else %}
+			<span>Welcome, <a href="/profile">{{ user.name }}</a></span>
+			&nbsp;&nbsp;&nbsp;
+			<a href="/signout" class="btn btn-outline-primary">Sign Out</a>
+			{% endif %}
+		</div>
+	</header>
+	<div class="content" style="display: block; width: 90%; height: 100%; margin: 0 auto; border-radius: 5%; ">
+		<div class="inner">
+			<div class="content-left fl">
+				<nav>
+					<ul>
+						<li class="active">
+							<a href="#">我的主页</a>
+						</li>
+						<li>
+							<a href="#">我的购买订单</a>
+						</li>
+						<li>
+							<a href="#">我的收藏</a>
+						</li>				
+						<li>
+							<a href="#">评价管理</a>
+						</li>
+						<li>
+							<a href="#">退款维权</a>
+						</li>
+						<li>
+							<a href="/edit_profile">编辑个人资料</a>
+						</li>
+						<li>
+							<a href="#">我的在售</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+			<div class="content-right fl">
+				<div class="right-top">
+					<div class="box">
+						<div class="top">
+							<div class="top-left">
+								<div class="user-pic">
+									<img src="{{ user.avatarUrl }}" alt="">
+								</div>
+								<div class="user-info">
+									<div class="user-name">{{user.name}}</div>
+									<div class="account">
+										我的账号 {{user.name}}
+										<a href="#" class="address">收货地址: {{user.location}}</a>
+									</div>
+								</div>
+							</div>
+							<div class="top-right">
+								
+							</div>
+						</div>
+						<div class="bottom">
+							<div class="bottom-item">
+								<div class="bottom-item-box">
+									<div class="item-box-top">0</div>
+									<div class="item-box-bottom">待发货</div>
+								</div>
+							</div>
+							<div class="bottom-item">
+								<div class="bottom-item-box">
+									<div class="item-box-top">0</div>
+									<div class="item-box-bottom">待收货</div>
+								</div>
+							</div>
+							<div class="bottom-item">
+								<div class="bottom-item-box">
+									<div class="item-box-top">0</div>
+									<div class="item-box-bottom">待评价</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="right-mid">
+					<div class="box">
+						<div class="title">我的物流</div>
+						<div class="box-content">
+							<div class="empty">当前没有物流信息</div>
+						</div>
+					</div>
+				</div>
+				<div class="right-bottom">
+					<div class="box">
+						<div class="title">常买常逛</div>
+						<div class="history">
+							<ul>
+								<li>
+									<div class="history-img">
+										<img src="images/img1.jpg" alt="">
+									</div>
+									<div class="txts">
+										<p>直液式速干走珠中性笔 0.5针管式速干水笔碳素笔学生考试签字黑笔</p>
+									</div>
+									<div class="price-box">
+										<div class="price1">￥</div>
+										<div class="price-num">2.01</div>
+										<div class="tag">热销商品</div>
+									</div>
+								</li>
+								<li>
+									<div class="history-img">
+										<img src="images/img2.jpg" alt="">
+									</div>
+									<div class="txts">
+										<p>【直充】bilibili大会员哔哩哔哩vip周卡30天一个月季年卡B站会员</p>
+									</div>
+									<div class="price-box">
+										<div class="price1">￥</div>
+										<div class="price-num">2.01</div>
+										<div class="tag">热销商品</div>
+									</div>
+								</li>
+								<li>
+									<div class="history-img">
+										<img src="images/img1.jpg" alt="">
+									</div>
+									<div class="txts">
+										<p>直液式速干走珠中性笔 0.5针管式速干水笔碳素笔学生考试签字黑笔</p>
+									</div>
+									<div class="price-box">
+										<div class="price1">￥</div>
+										<div class="price-num">2.01</div>
+										<div class="tag">热销商品</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

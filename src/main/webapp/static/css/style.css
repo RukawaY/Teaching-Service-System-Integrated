@@ -1,0 +1,364 @@
+html, body {
+    width: 100%;
+    height: 100%;
+}
+body{ 
+	font-family: "Microsoft YaHei";
+	font-size: 14px;
+}
+*{
+	margin: 0;
+	padding: 0;
+	list-style-type:none;
+	text-decoration: none;
+}
+.cl{ 
+	clear:both;
+	overflow: hidden;
+}
+.fl{
+	float: left;
+}
+.fr{
+	float: right;
+}
+a:hover{
+	text-decoration: none !important;
+}
+header{
+	padding-top: 30px;
+	margin-bottom: 10px;
+	overflow: hidden;
+}
+.inner{
+	margin: 0 auto;
+    width: 1040px;
+}
+.logo{
+	float: left;
+	overflow: hidden;
+	height: 28px;
+    width: 74px;
+}
+.logo img{
+	max-width: 100%;
+}
+.logo-txt{
+	color: #ff5000;
+    font-family: PingFangSC;
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 24px;
+    margin-left: 16px;
+}
+.search{
+	
+    color: #11192d;
+    font-size: 14px;
+    width: 364px;
+    height: 38px;
+    line-height: 38px;
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+
+}
+.search-btn{
+	background: #239cff;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    height: 34px;
+    line-height: 34px;
+    position: absolute;
+    text-align: center;
+    right: 2px;
+    top: 2px;
+    width: 72px;
+    z-index: 9;
+}
+.content-left{
+    background: #fff;
+    border-radius: 16px;
+    border-right: none;
+    margin-right: 16px;
+    padding: 16px;
+    width: 240px;
+    box-sizing: border-box;
+}
+.content-left ul{
+	background: transparent;
+    border: none;
+    box-shadow: none;
+    height: 100%;
+}
+.content-left li{
+	padding: 0 16px;
+	overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 5px;
+}
+
+.content-left a{
+    color: #11192d;
+    font-size: 14px;
+    height: 34px;
+    line-height: 34px;
+    display: block;
+}
+.content-left li.active{
+    background-color: #ffefe6!important;
+    border-radius: 4px;
+    
+    font-weight: 600!important;
+}
+.content-left li.active a{
+	color: #239cff;
+}
+.content-left li:hover{
+	background-color: #f3f6f8;
+}
+/*右侧*/
+.content-right{
+	width: 784px;
+}
+
+html,body{
+	min-width: 1040px;
+	background-color: #f3f6f8;
+}
+.box{
+	background-color: #fff;
+    border-radius: 16px;
+    margin-bottom: 16px;
+    padding: 16px;
+    width: 100%;
+}
+/*top*/
+.top{
+    align-items: flex-start;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 36px;
+    min-height: 120px;
+}
+.top-left{
+    align-items: center;
+    display: flex;
+    width: calc(100% - 288px);
+}
+.user-info{
+	width: 500px;
+}
+.user-pic{
+    border-radius: 50%;
+    cursor: pointer;
+    flex-shrink: 0;
+    height: 120px;
+    margin-right: 16px;
+    overflow: hidden;
+    position: relative;
+    width: 120px;
+}
+.user-pic img{
+    height: 100%;
+    width: 100%;
+}
+.user-name{
+	align-items: center;
+    color: #11192d;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    font-family: PingFangSC-Semibold;
+    font-size: 24px;
+    height: 32px;
+    line-height: 32px;
+    margin-bottom: 12px;
+}
+.account{
+    color: #7c889c;
+    font-size: 14px;
+    line-height: 22px;
+    display: flex;
+}
+.address{
+	display: block;
+    border-left: 1px solid #f0f3f5;
+    color: #7c889c;
+    cursor: pointer;
+    font-family: PingFangSC;
+    font-size: 14px;
+    font-weight: 400;
+    height: 22px;
+    letter-spacing: 0;
+    line-height: 22px;
+    margin-left: 8px;
+    padding-left: 8px;
+}
+.tips{
+	display: flex;
+}
+.tips p{
+	align-items: center;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    height: 22px;
+    margin-top: 4px;
+    white-space: nowrap;
+}
+.tips img{
+    height: 22px;
+    margin-right: 4px;
+    margin-top: 4px;
+}
+/*bottom*/
+.title{
+    align-items: center;
+    color: #1f1f1f;
+    display: flex;
+    flex-direction: row;
+    font-family: PingFang SC;
+    font-size: 20px;
+    font-weight: 600;
+    height: 28px;
+    letter-spacing: 0;
+    line-height: 28px;
+    margin-bottom: 12px;
+}
+.bottom{
+    align-items: center;
+    display: flex;
+    margin-bottom: 16px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.bottom-item{
+    align-items: center;
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    position: relative;
+}
+
+.bottom-item-box{
+	align-items: center;
+    color: #121a2f;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.bottom-item:hover .bottom-item-box{
+	color: #239cff;
+}
+.item-box-top{
+    font-family: AlibabaSans102v1TaoBao-Bold;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 24px;
+    margin-bottom: 8px;
+}
+.item-box-bottom{
+	font-family: PingFangSC-Regular;
+    font-size: 14px;
+    line-height: 14px;
+}
+.empty{
+    margin-bottom: 48px;
+    align-items: center;
+    color: #7c889c;
+    display: flex;
+    flex-direction: column;
+    font-family: PingFangSC-Regular;
+    font-size: 14px;
+    line-height: 14px;
+}
+.history{
+	display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow: hidden;
+}
+.history li{
+	cursor: pointer;
+    margin-bottom: 16px;
+    margin-right: 16px;
+    width: 240px;
+    float: left;
+}
+.history-img{
+	background-position: 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 8px;
+    height: 240px;
+    overflow: hidden;
+    position: relative;
+    width: 240px;
+}
+.history-img img{
+	width:100%;
+}
+.txts{
+	box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 8px 0;
+}
+.txts p{
+    color: #1f1f1f;
+    font-family: PingFang SC;
+    font-size: 16px;
+    font-weight: 500;
+    height: 24px;
+    letter-spacing: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: break-all;
+}
+.price-box{
+    align-items: flex-end;
+    display: flex;
+    flex-direction: row;
+    height: 22px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.price1{
+    color: #239cff;
+    font-family: Inter V;
+    font-size: 16px;
+    font-weight: 600;
+    height: 20px;
+    letter-spacing: -.02em;
+    line-height: 20px;
+}
+.price-num{
+    color: #239cff;
+    font-family: Inter V;
+    font-size: 20px;
+    font-weight: 600;
+    height: 22px;
+    letter-spacing: -.02em;
+    line-height: 22px;
+}
+.tag{
+    color: #239cff;
+    font-family: PingFang SC;
+    font-size: 14px;
+    font-weight: 400;
+    height: 20px;
+    letter-spacing: 0;
+    line-height: 20px;
+    margin-left: 8px;
+}

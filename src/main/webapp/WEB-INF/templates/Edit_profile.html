@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑个人资料</title>
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+            <h5 class="my-0 mr-md-auto font-weight-normal"><a href="/">Home</a></h5>
+            <nav class="my-2 mr-md-3">
+                <a class="p-2 text-dark" target="_blank" href="https://www.liaoxuefeng.com/wiki/1252599548343744">Learn</a>
+            </nav>
+            {% if user==null %}
+            <a href="/signin" class="btn btn-outline-primary">Sign In</a>
+            {% else %}
+            <span>Welcome, <a href="/profile">{{ user.name }}</a></span>
+            &nbsp;&nbsp;&nbsp;
+            <a href="/signout" class="btn btn-outline-primary">Sign Out</a>
+            {% endif %}
+        </div>
+    </header>
+    <div class="col-12 col-md">
+        <!-- 合并所有表单为一个 -->
+        <form method="post" action="/edit_profile" enctype="multipart/form-data">
+                <div class="align-items-center">
+                    <!-- 点击图片触发文件选择 -->
+                    <div class="d-flex">
+                        <p>
+                            <img class="rounded" style="width:80px;height:80px; cursor: pointer;" src="{{ user.avatarUrl }}" id="avatarImage" />
+                        </p>
+                        <!-- 隐藏的文件输入框 -->
+                        <div class="ml-3" style="margin-top: 40px; margin-left: 5px;">
+                            <div class="form-group mb-0">
+                                <label for="avatar" class="sr-only">Upload Avatar</label>
+                                <input type="file" class="form-control-file" name="avatar" id="avatar" accept="image/*" style="display: none;" />
+                            </div>
+                            <button type="button" class="btn btn-primary mt-2" style="width: 100px; height: 25px; font-size: 16px; line-height: 7px;" id="uploadAvatarBtn">Upload</button>
+                        </div>
+                    </div>
+                    <div>
+                        <p style="display: block; font-size: 10px">点击头像上传头像</p>
+                    </div>
+                </div>
+
+                <!-- 新邮箱 -->
+                <div class="form-group">
+                    <label for="newemail">New Email</label>
+                    <input name="newemail" type="email" class="form-control" id="newemail" placeholder="Email" minlength="6" maxlength="100" value="{{user.email}}">
+                </div>
+
+                <!-- 新姓名 -->
+                <div class="form-group">
+                    <label for="newname">New Name</label>
+                    <input name="newname" type="text" class="form-control" id="newname" placeholder="Name" minlength="6" maxlength="20" value="{{user.name}}">
+                </div>
+
+                <!-- 收货地址 -->
+                <div class="form-group">
+                    <label for="address">收货地址</label>
+                    <input name="address" type="text" class="form-control" id="address" placeholder="address" minlength="6" maxlength="50" value="{{user.location}}">
+                </div>
+
+                <!-- 提交按钮 -->
+                <div class="form-group">
+                    <button type="submit" class="btn btn-outline-primary">Submit</button>
+                </div>
+
+                <!-- 错误消息 -->
+                {% if error != null %}
+                <div class="form-group">
+                    <p id="error" class="text-danger">{{ error }}</p>
+                </div>
+                {% endif %}
+            </form>
+    </div>
+
+    <script type="text/javascript">
+        // 确保点击图片时触发文件输入框点击
+        document.getElementById('avatarImage').addEventListener('click', function() {
+            document.getElementById('avatar').click(); // 触发文件选择框的点击事件
+        });
+
+        // 如果文件选择了，显示选择的头像
+        document.getElementById('avatar').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('avatarImage').src = e.target.result; // 更新头像显示为选中的图片
+                };
+                reader.readAsDataURL(file); // 读取图片文件并显示
+            }
+        });
+
+        // 点击上传按钮时触发文件选择框
+        document.getElementById('uploadAvatarBtn').addEventListener('click', function() {
+            document.getElementById('avatar').click(); // 触发文件选择框的点击事件
+        });
+    </script>
+
+</body>
+</html>
