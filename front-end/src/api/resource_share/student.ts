@@ -43,8 +43,11 @@ interface Homework {
     title: string;
     description: string;
     deadline: string;
-    isSubmitted?: boolean;
+    isSubmitted: boolean;
     selectedFile?: File | null;
+    score?: number | null
+    comment?: string | null
+    weight?: number | null
 }
 
 interface HomeworkSubmission {
@@ -290,6 +293,11 @@ export const getCourseDetail = async (courseId: number): Promise<ApiResponse<Cou
         throw error;
     }
 }
+export async function getSubmissionDetail(homework_id: number, student_id: number) {
+    return await api.get('/api/student/get_submission', {
+      params: { homework_id, student_id }
+    })
+  }
 
 // 导出所有 API 函数
 export const studentAPI = {
@@ -306,9 +314,10 @@ export const studentAPI = {
     uploadResourceFile,
     downloadResourceFile,
 
-    // 课程相关
+    // 课程相
     getCourseList,
-    getCourseDetail
+    getCourseDetail,
+    getSubmissionDetail
 }
 
 export default studentAPI;

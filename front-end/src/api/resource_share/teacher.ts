@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios'
 
 // 配置axios
 const request = axios.create({
-  baseURL: 'http://localhost:8080',  
+  baseURL: 'http://localhost:8080',  // 端口改为8081
   timeout: 5000
 })
 
@@ -54,13 +54,13 @@ interface ApiResponse<T> {
 
 // 作业相关接口
 interface Homework {
-  homework_id: number
-  course_id: number
+  homework_id: string
+  course_id: string
   title: string
   description: string
   deadline: string
-  submitted_count: number
-  total_count: number
+  weight: number
+  requirements: string
 }
 
 // 作业提交相关接口
@@ -95,6 +95,7 @@ interface HomeworkWeight {
   homework_id: number
   weight: number  // 比例，例如 0.3 表示占 30%
 }
+
 
 // 获取所有课程的作业列表
 export const getHomeworkList = async (): Promise<ApiResponse<CourseHomework[]>> => {
@@ -167,16 +168,15 @@ export const exportGrades = async (homeworkId: number): Promise<Blob> => {
   }
 }
 
-// 设置作业成绩比例
-export const setHomeworkWeight = async (params: HomeworkWeight): Promise<ApiResponse<null>> => {
+// 布置新作业
+export const assignHomework = async (params: Homework): Promise<ApiResponse<null>> => {
   try {
-    const response = await request.post('/api/teacher/homework/weight', params)
+    const response = await request.post('/api/teacher/homework', params)
     return response.data
   } catch (error) {
-    throw new Error('设置作业成绩比例失败')
+    throw new Error('布置作业失败1')
   }
 }
-
 // 获取作业成绩比例
 export const getHomeworkWeight = async (homeworkId: number): Promise<ApiResponse<number>> => {
   try {
@@ -187,36 +187,49 @@ export const getHomeworkWeight = async (homeworkId: number): Promise<ApiResponse
   }
 }
 
-
-
-// 考勤处理参数定义（包含比例）
-interface AttendanceProcessParams {
+// 新增：考勤相关接口参数定义
+interface AttendanceRecord {
   studentName: string;
   courseName: string;
   score: number;
-  ratio: number; // 考勤比例（0-100）
 }
 
-//处理考勤记录接口（包含分数和比例）
-// 考勤处理参数定义
-interface AttendanceProcessParams {
-  studentId: number; 
+interface SetAttendanceWeightParams {
   courseName: string;
-  score: number;
-  ratio: number; // 考勤比例（0-100）
+  weight: number;
 }
 
-// 处理考勤记录接口（参数同步修改）
-export const processAttendanceRecord = async (params: AttendanceProcessParams): Promise<ApiResponse<boolean>> => {
+// 新增：获取教师课程列表接口
+export const getTeacherCourses = async (teacherName: string): Promise<ApiResponse<string[]>> => {
   try {
-    const response = await request.post('/api/attendance/process', params); 
+    const response = await request.get(`/api/attendance/courses?teacherName=${teacherName}`);
     return response.data;
   } catch (error) {
-    throw new Error('处理考勤记录失败');
+    throw new Error('获取教师课程列表失败');
   }
 };
 
-// 导出接口更新
+// 新增：保存考勤记录接口
+export const saveAttendanceRecord = async (record: AttendanceRecord): Promise<ApiResponse<boolean>> => {
+  try {
+    const response = await request.post('/api/attendance/records', record);
+    return response.data;
+  } catch (error) {
+    throw new Error('保存考勤记录失败');
+  }
+};
+
+// 新增：设置考勤比例接口
+export const setAttendanceWeightApi = async (params: SetAttendanceWeightParams): Promise<ApiResponse<boolean>> => {
+  try {
+    const response = await request.post('/api/attendance/weight', params);
+    return response.data;
+  } catch (error) {
+    throw new Error('设置考勤比例失败');
+  }
+};
+
+// 导出新增接口
 export const teacherAPI = {
   getHomeworkList,
   getHomeworkSubmissions,
@@ -224,9 +237,11 @@ export const teacherAPI = {
   submitGrading,
   getHomeworkStats,
   exportGrades,
-  setHomeworkWeight,
+  assignHomework,
   getHomeworkWeight,
-  processAttendanceRecord, 
+  getTeacherCourses,
+  saveAttendanceRecord,
+  setAttendanceWeightApi,
 };
 
 export default teacherAPI
