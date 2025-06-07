@@ -239,6 +239,21 @@ CREATE TABLE IF NOT EXISTS homework_submission (
   INDEX idx_submission_student (student_id)
 ) COMMENT '作业提交表';
 
+-- 资源表
+CREATE TABLE IF NOT EXISTS resource (
+    resource_id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '资源ID',
+    uploader_id BIGINT NOT NULL COMMENT '上传者ID',
+    course_id BIGINT COMMENT '关联课程ID',
+    resource_name VARCHAR(255) NOT NULL COMMENT '资源名称',
+    resource_type VARCHAR(50) NOT NULL COMMENT '资源类型（如文档、视频）',
+    upload_time DATETIME NOT NULL COMMENT '上传时间',
+    file_path VARCHAR(255) NOT NULL COMMENT '文件存储路径',
+    description TEXT COMMENT '资源描述',
+    keywords VARCHAR(255) COMMENT '关键词',
+    directory_id BIGINT COMMENT '所属目录ID',
+    FOREIGN KEY (course_id) REFERENCES course(course_id) ON DELETE SET NULL
+) COMMENT '资源表';
+
 -- 专业数据
 INSERT INTO major (major_id, major_name) VALUES 
 (1, '软件工程'),

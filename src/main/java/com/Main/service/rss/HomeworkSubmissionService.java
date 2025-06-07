@@ -156,7 +156,7 @@ public class HomeworkSubmissionService {
             jdbcTemplate.update(insertSql,
                     gradeId,
                     componentName,
-                    2, // 作业类型为2
+                    3, // 作业类型为2
                     (int)(weight * 100), // 权重转为百分比
                     (int)score);
         } else {

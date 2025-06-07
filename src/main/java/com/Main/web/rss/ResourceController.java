@@ -1,6 +1,6 @@
 package com.Main.web.rss;
 
-import com.Main.service.rss.ResourceService;
+import com.Main.service.rss.impl.ResourceServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,14 +8,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/resource")
-@CrossOrigin(origins = "http://localhost:5174",
-        allowCredentials = "true",
-        methods = {RequestMethod.GET, RequestMethod.POST}
-)
 public class ResourceController {
 
     @Autowired
-    private ResourceService resourceService;
+    private ResourceServiceImpl resourceService;
 
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(
