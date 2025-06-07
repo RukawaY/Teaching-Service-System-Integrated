@@ -149,7 +149,6 @@
             <p>文件名：{{ selectedSubmission.file_name }}</p>
             <p>分数：{{ selectedSubmission.score }}</p>
             <p>评语：{{ selectedSubmission.comment }}</p>
-            <a :href="getDownloadUrl(selectedSubmission)" target="_blank">下载文件</a>
           </div>
         </el-dialog>
         <!-- 评分弹窗 -->

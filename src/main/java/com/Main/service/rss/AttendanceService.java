@@ -105,7 +105,7 @@ public class AttendanceService {
         GradeComponent component = new GradeComponent();
         component.setGradeId(gradeId);
         component.setComponentName("考勤成绩");
-        component.setComponentType(1); // 固定为考勤类型
+        component.setComponentType(0); // 固定为考勤类型
         component.setRatio(attendanceRatio);
         component.setScore(attendanceScore);
 

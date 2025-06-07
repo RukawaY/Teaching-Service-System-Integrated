@@ -20,6 +20,10 @@ public class StudentHomeworkSubmissionController {
 
     @Autowired
     private HomeworkSubmissionService submissionService;
+    
+    // 作业文件存储的基础路径，默认为项目根目录下的homework_uploads文件夹
+    @Value("${homework.upload.path:src/main/webapp/homework_uploads}")
+    private String homeworkUploadPath;
 
     // 从 application.properties 读取上传目录，默认 uploads
     @Value("${upload.base-dir:uploads}")
