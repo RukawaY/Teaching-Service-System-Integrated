@@ -191,7 +191,9 @@ const getModuleCards = (moduleName) => {
 };
 
 const favoriteCardDetails = computed(() => {
-  return favoritedCardIds.value.map(id => allCards.value.find(card => card.id === id)).filter(card => card);
+  return favoritedCardIds.value
+    .map(id => allCards.value.find(card => card.id === id))
+    .filter(card => card && (card.userTypes.includes(user.value) || card.userTypes.includes('all')));
 });
 
 
