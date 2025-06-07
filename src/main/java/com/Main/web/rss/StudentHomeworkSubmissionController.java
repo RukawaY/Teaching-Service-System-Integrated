@@ -3,9 +3,12 @@ package com.Main.web.rss;
 import com.Main.entity.rss.HomeworkSubmission;
 import com.Main.service.rss.HomeworkSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -14,8 +17,17 @@ import java.util.UUID;
 @RequestMapping("/api/student")
 @CrossOrigin
 public class StudentHomeworkSubmissionController {
+
     @Autowired
     private HomeworkSubmissionService submissionService;
+    
+    // 作业文件存储的基础路径，默认为项目根目录下的homework_uploads文件夹
+    @Value("${homework.upload.path:src/main/webapp/homework_uploads}")
+    private String homeworkUploadPath;
+
+    // 从 application.properties 读取上传目录，默认 uploads
+    @Value("${upload.base-dir:uploads}")
+    private String uploadBaseDir;
 
     @PostMapping("/submit_homework")
     public Map<String, Object> submitHomework(
@@ -24,14 +36,21 @@ public class StudentHomeworkSubmissionController {
             @RequestParam("file") MultipartFile file
     ) throws Exception {
         String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-        String savePath = "C:/hw_uploads/" + fileName; // 路径请根据实际修改
+
+        // 自动适配系统分隔符，存储到项目目录下的 uploads 目录
+        String saveDir = Paths.get(System.getProperty("user.dir"), uploadBaseDir).toString();
+        Files.createDirectories(Paths.get(saveDir));
+        String savePath = Paths.get(saveDir, fileName).toString();
+
         file.transferTo(new java.io.File(savePath));
+
         HomeworkSubmission submission = new HomeworkSubmission();
         submission.setHomework_id(homework_id);
         submission.setStudent_id(student_id);
         submission.setFile_name(fileName);
         submission.setFile_url(savePath);
         submissionService.submit(submission);
+
         return Map.of("code", "200", "message", "success");
     }
 
@@ -41,7 +60,6 @@ public class StudentHomeworkSubmissionController {
             @RequestParam Integer student_id) {
         HomeworkSubmission submission = submissionService.getByHomeworkIdAndStudentId(homework_id, student_id);
         if (submission != null) {
-            // 构建data
             Map<String, Object> data = new HashMap<>();
             data.put("submission_id", submission.getSubmission_id());
             data.put("homework_id", submission.getHomework_id());

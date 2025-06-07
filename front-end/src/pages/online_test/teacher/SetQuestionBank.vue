@@ -118,7 +118,7 @@
         </el-form-item>
 
         <el-form-item label="题目难度">
-          <el-select v-model="currentEditQuestion.difficulty" placeholder="请选择难度">
+          <el-select v-model="newQuestion.difficulty" placeholder="请选择难度">
             <el-option label="1" value="1" />
             <el-option label="2" value="2" />
             <el-option label="3" value="3" />
