@@ -118,7 +118,11 @@
         </div>
         <el-table :data="submissionList" size="small" style="margin: 18px 0;">
           <el-table-column prop="student_id" label="学生id" />
-          <el-table-column prop="submit_time" label="提交时间" />
+          <el-table-column prop="submit_time" label="提交时间">
+            <template #default="{ row }">
+              {{ formatDateTime(row.submit_time) }}
+            </template>
+          </el-table-column>
           <el-table-column prop="file_name" label="文件名" />
           <el-table-column prop="score" label="分数" width="80" />
           <el-table-column prop="comment" label="评语" width="120" />
@@ -141,7 +145,7 @@
         <el-dialog v-model="submissionDetailVisible" title="作业详情" width="400px">
           <div v-if="selectedSubmission">
             <p>学生id：{{ selectedSubmission.student_id }}</p>
-            <p>提交时间：{{ selectedSubmission.submit_time }}</p>
+            <p>提交时间：{{ formatDateTime(selectedSubmission.submit_time) }}</p>
             <p>文件名：{{ selectedSubmission.file_name }}</p>
             <p>分数：{{ selectedSubmission.score }}</p>
             <p>评语：{{ selectedSubmission.comment }}</p>
@@ -171,7 +175,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onMounted, computed } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { teacherAPI } from '../../../api/resource_share/teacher'
 
@@ -279,6 +283,27 @@ const getStatusTagType = (hw: any): string => {
   if (status === '进行中') return 'primary'
   if (status === '已截止') return 'danger'
   return 'default'
+}
+
+// 时间格式化函数，兼容字符串/Date/时间戳
+const formatDateTime = (val: any) => {
+  if (!val) return ''
+  let date: Date
+  if (typeof val === 'string' && /^\d+$/.test(val)) {
+    date = new Date(Number(val))
+  } else if (typeof val === 'number') {
+    date = new Date(val)
+  } else {
+    date = new Date(val)
+  }
+  if (isNaN(date.getTime())) return val
+  const y = date.getFullYear()
+  const m = (date.getMonth() + 1).toString().padStart(2, '0')
+  const d = date.getDate().toString().padStart(2, '0')
+  const h = date.getHours().toString().padStart(2, '0')
+  const min = date.getMinutes().toString().padStart(2, '0')
+  const s = date.getSeconds().toString().padStart(2, '0')
+  return `${y}-${m}-${d} ${h}:${min}:${s}`
 }
 
 // ========== 批改相关 ==========

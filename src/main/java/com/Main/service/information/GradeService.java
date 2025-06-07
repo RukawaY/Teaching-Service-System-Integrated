@@ -301,7 +301,9 @@ public class GradeService{
      */
     public StudentAnalyseDTO getStudentGradeAnalysis(int studentId, int startSecYear, String startSemester, int endSecYear, String endSemester) {
         StudentAnalyseDTO analysisResult = new StudentAnalyseDTO();
-        logger.info("studentId={}",studentId);
+        logger.info("studentId={}, 开始时间：{}年{}学期, 结束时间：{}年{}学期", 
+                   studentId, startSecYear, startSemester, endSecYear, endSemester);
+        
         // 学期顺序定义
         List<String> semesters = Arrays.asList("春夏", "秋冬");
         Map<String, Integer> semesterOrder = new HashMap<>();
@@ -332,17 +334,27 @@ public class GradeService{
             Section section = jdbcTemplate.queryForObject("SELECT * FROM Section WHERE section_id = ?",sectionRowMapper,studentGradeDTO.getSection_id());
             int year = section.getSecYear();
             String semester = section.getSemester();
-            logger.info("year={}, semester={}", year, semester);
-            // 检查是否在范围内
+            logger.info("成绩学期：year={}, semester={}", year, semester);
+            
             // 检查是否在范围内
             if (year > 0) {
-                boolean withinStartYear = (startSecYear == 0 || year >= startSecYear) && (startSemester == null || semesterOrder.get(startSemester) <= semesterOrder.get(semester));
-                boolean withinEndYear = (endSecYear == 0 || year <= endSecYear) && (endSemester == null || semesterOrder.get(endSemester) >= semesterOrder.get(semester));
-
-                if (!withinStartYear || !withinEndYear) {
-                    continue; // 跳过范围外的学年
+                // 创建组合键（年份*100 + 学期索引），便于直接比较
+                int currentTermValue = year * 100 + (semesterOrder.getOrDefault(semester, 0));
+                int startTermValue = (startSecYear > 0) ? 
+                    startSecYear * 100 + (semesterOrder.getOrDefault(startSemester, 0)) : 0;
+                int endTermValue = (endSecYear > 0) ? 
+                    endSecYear * 100 + (semesterOrder.getOrDefault(endSemester, 0)) : Integer.MAX_VALUE;
+                
+                logger.info("比较值：当前学期={}, 开始学期={}, 结束学期={}", 
+                           currentTermValue, startTermValue, endTermValue);
+                
+                // 直接比较数值大小，简化逻辑
+                if (currentTermValue < startTermValue || currentTermValue > endTermValue) {
+                    logger.info("学期{}年{}不在范围内，跳过", year, semester);
+                    continue; // 跳过范围外的学期
                 }
             }
+            
             // 累加 GPA 和分数
             totalGpa += studentGradeDTO.getGpa();
             totalScore += studentGradeDTO.getScore();

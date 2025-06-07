@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS Apply (
     old_score INT NOT NULL,
     new_score INT NOT NULL,
     reason VARCHAR(255) NOT NULL,
-    audit_reason VARCHAR(255) NOT NULL,
+    audit_reason VARCHAR(255),
     audit_status ENUM('0', '1', '2') DEFAULT '0',  -- 0-待审核, 1-已通过, 2-已拒绝
     apply_time DATETIME DEFAULT CURRENT_TIMESTAMP,
     review_time DATETIME,
@@ -395,9 +395,7 @@ INSERT INTO curriculum (major_id, curriculum_json) VALUES
 (2, '[{"section_credit": 11, "section_name": "专业必修课程", "course_list": [{"course_name": "程序设计基础", "credit": 3.0}, {"course_name": "数据结构", "credit": 4.0}, {"course_name": "操作系统", "credit": 4.0}]}]'),
 (1, '[{"section_credit": 11.5, "section_name": "专业必修课程", "course_list": [{"course_name": "数据结构", "credit": 4.0}, {"course_name": "计算机组成原理", "credit": 3.5}, {"course_name": "操作系统", "credit": 4.0}]}]'),
 (3, '[{"section_credit": 10.5, "section_name": "专业核心课程", "course_list": [{"course_name": "数据结构", "credit": 4.0}, {"course_name": "数据库系统", "credit": 3.5}, {"course_name": "编译原理", "credit": 3.0}]}]'),
-(4, '[{"section_credit": 11.0, "section_name": "专业必修课程", "course_list": [{"course_name": "程序设计基础", "credit": 3.0}, {"course_name": "数据结构", "credit": 4.0}, {"course_name": "操作系统", "credit": 4.0}]}]');
-
--- 个人培养方案
+(4, '[{"section_credit": 11.0, "section_name": "专业必修课程", "course_list": [{"course_name": "程序设计基础", "credit": 3.0}, {"course_name": "数据结构", "credit": 4.0}, {"course_name": "操作系统", "credit": 4.0}]}]');   
 
 -- 选课系统时间配置
 INSERT INTO selection_time (id, max_number, first_time_list, second_time_list, drop_time_list)
