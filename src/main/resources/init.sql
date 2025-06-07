@@ -243,7 +243,7 @@ CREATE TABLE IF NOT EXISTS homework_submission (
 CREATE TABLE IF NOT EXISTS resource (
     resource_id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '资源ID',
     uploader_id BIGINT NOT NULL COMMENT '上传者ID',
-    course_id BIGINT COMMENT '关联课程ID',
+    course_id INT COMMENT '关联课程ID',
     resource_name VARCHAR(255) NOT NULL COMMENT '资源名称',
     resource_type VARCHAR(50) NOT NULL COMMENT '资源类型（如文档、视频）',
     upload_time DATETIME NOT NULL COMMENT '上传时间',

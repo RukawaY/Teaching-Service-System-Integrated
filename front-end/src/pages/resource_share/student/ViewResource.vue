@@ -31,7 +31,7 @@
           >
             <template #default="{ node, data }">
               <span class="custom-tree-node">
-                <span>{{ node.label }}</span>
+                <span>{{ data.directoryName || data.resource_name || node.label }}</span>
                 <span class="node-info" v-if="data.upload_time">
                   <el-tag size="small" type="info">{{ data.upload_time }}</el-tag>
                 </span>
@@ -98,9 +98,19 @@ const selectedResource = ref(null)
 // 树形控件配置
 const defaultProps = {
   children: 'children',
-  label: 'directoryName',  // 改为后端返回的 directoryName
-  nodeKey: 'directoryId'    // 改为后端返回的 directoryId
-}
+  label: (data) => {
+    // 如果是目录节点
+    if (data.directoryName) {
+      return data.directoryName;
+    }
+    // 如果是资源节点
+    if (data.resource_name) {
+      return data.resource_name;
+    }
+    // 兜底方案
+    return `资源 ${data.resource_id || ''}`;
+  }
+};
 
 // 控制是否使用示例数据（开发/测试时设为 true，上线前设为 false）
 const useMockData = ref(false);

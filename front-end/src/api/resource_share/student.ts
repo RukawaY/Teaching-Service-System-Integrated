@@ -226,7 +226,7 @@ interface ResourceDirectory {
 // 获取课程资源目录
 export const getResourceDirectory = async (courseId: number): Promise<ApiResponse<ResourceDirectory[]>> => {
     try {
-        const response = await api.get(`/resource/directory/${courseId}`);
+        const response = await api.get(`/api/resource/directory/${courseId}`);
         return response.data;
     } catch (error) {
         return handleError(error) as ApiResponse<ResourceDirectory[]>;  // 复用统一错误处理
@@ -248,28 +248,29 @@ export const createResourceDirectory = async (params: {
     }
 };
 
-// 上传资源文件
-export const uploadResourceFile = async (formData: FormData): Promise<ApiResponse> => {
+// 上传资源文件（新增上传接口）
+export const uploadResourceFile = async (formData: FormData): Promise<ApiResponse<any>> => {
     try {
-        const response = await api.post('/resource/upload', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
+        const response = await api.post('/api/resource/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
         });
         return response.data;
     } catch (error) {
-        return handleError(error) as ApiResponse;
+        return handleError(error) as ApiResponse<any>;
     }
 };
 
 // 下载资源文件
 export const downloadResourceFile = async (resourceId: number): Promise<Blob> => {
     try {
-        const response = await api.get(`/resource/download/${resourceId}`, {
-            responseType: 'blob'
+        const response = await api.get(`/api/resource/download/${resourceId}`, {
+            responseType: 'blob',
         });
         return response.data;
     } catch (error) {
-        handleError(error);
-        throw error;
+        throw new Error('下载文件失败');
     }
 };
 
