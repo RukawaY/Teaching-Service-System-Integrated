@@ -2,10 +2,7 @@ package com.Main.service.information;
 
 import com.Main.RowMapper.information.ClassroomRowMapper;
 import com.Main.RowMapper.information.SectionRowMapper;
-import com.Main.dto.information.ApiResponseDTO;
-import com.Main.dto.information.PageResponseDTO;
 import com.Main.dto.information.SectionSearchDTO;
-import com.Main.dto.information.SectionSearchListDTO;
 import com.Main.entity.information.Classroom;
 import com.Main.entity.information.Section;
 
@@ -77,8 +74,8 @@ public class SectionService {
             sectionSearchDTO.setSemester(section.getSemester());
             sectionSearchDTO.setSecYear(section.getSecYear());
             sectionSearchDTO.setSecTime(section.getSecTime());
-            sectionSearchDTO.setClassroom_location(classroom.getLocation());
-            sectionSearchDTO.setClassroom_capacity(classroom.getCapacity());
+            sectionSearchDTO.setClassroom_location(classroom.getClassroom_location());
+            sectionSearchDTO.setClassroom_capacity(classroom.getClassroom_capacity());
             sectionSearchDTO.setAvailable_capacity(section.getCapacity());
             sectionSearchDTOS.add(sectionSearchDTO);
         }
@@ -103,9 +100,9 @@ public class SectionService {
             sectionSearchDTO.setSemester(section.getSemester());
             sectionSearchDTO.setSecYear(section.getSecYear());
             sectionSearchDTO.setSecTime(section.getSecTime());
-            sectionSearchDTO.setClassroom_location(classroom.getLocation());
+            sectionSearchDTO.setClassroom_location(classroom.getClassroom_location());
             sectionSearchDTO.setAvailable_capacity(section.getAvailableCapacity());
-            sectionSearchDTO.setClassroom_capacity(classroom.getCapacity());
+            sectionSearchDTO.setClassroom_capacity(classroom.getClassroom_capacity());
             return sectionSearchDTO;
         } catch (DataAccessException e) {
             logger.error("SQL Error: " + e.getMessage(), e);
@@ -128,13 +125,13 @@ public class SectionService {
                 courseId, classroomId, capacity, semester, secYear, secTime);
 
         // 参数验证
-        if (courseId <= 0) {
+        if (courseId < 0) {
             logger.warn("Invalid courseId: {}", courseId);
-            throw new IllegalArgumentException("课程ID必须大于0");
+            throw new IllegalArgumentException("课程ID必须大于等于0");
         }
-        if (classroomId <= 0) {
+        if (classroomId < 0) {
             logger.warn("Invalid classroomId: {}", classroomId);
-            throw new IllegalArgumentException("教室ID必须大于0");
+            throw new IllegalArgumentException("教室ID必须大于等于0");
         }
         if (capacity <= 0) {
             logger.warn("Invalid capacity: {}", capacity);
@@ -230,8 +227,8 @@ public class SectionService {
             throw new IllegalArgumentException("上课时间不能为空");
         }
         Classroom classroom = jdbcTemplate.queryForObject("select * from classroom where classroom_id = ?",classroomRowMapper, classroomId);
-        if(capacity > classroom.getCapacity()) {
-            logger.warn("Invalid capacity: {}, 教室容量为: {}", capacity, classroom.getCapacity());
+        if(capacity > classroom.getClassroom_capacity()) {
+            logger.warn("Invalid capacity: {}, 教室容量为: {}", capacity, classroom.getClassroom_capacity());
             throw new IllegalArgumentException("开课容量不能小于教室容量");
         }
 

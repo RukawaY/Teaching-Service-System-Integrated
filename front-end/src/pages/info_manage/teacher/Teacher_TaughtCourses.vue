@@ -7,17 +7,17 @@
         <div class="card query-filter-card">
           <h2 class="card-title">课程筛选条件</h2>
           <form
-            @submit.prevent="queryCourses"
-            id="queryCourseForm"
-            class="query-form-grid"
+              @submit.prevent="queryCourses"
+              id="queryCourseForm"
+              class="query-form-grid"
           >
             <div class="form-group">
               <label for="courseName">课程名称:</label>
               <input
-                type="text"
-                id="courseName"
-                v-model="filters.course_name"
-                placeholder="输入课程名关键词"
+                  type="text"
+                  id="courseName"
+                  v-model="filters.course_name"
+                  placeholder="输入课程名关键词"
               />
             </div>
             <div class="form-group">
@@ -34,9 +34,9 @@
                 <FontAwesomeIcon icon="fas fa-search" /> 查 询
               </button>
               <button
-                type="reset"
-                class="btn btn-secondary"
-                @click="resetFilterForm"
+                  type="reset"
+                  class="btn btn-secondary"
+                  @click="resetFilterForm"
               >
                 <FontAwesomeIcon icon="fas fa-undo" /> 重 置
               </button>
@@ -49,83 +49,83 @@
           <div class="table-responsive">
             <table id="courseTable">
               <thead>
-                <tr>
-                  <th>课程名称</th>
-                  <th>课程描述</th>
-                  <th>授课教师</th>
-                  <th>学分</th>
-                  <th>周学时</th>
-                  <th>课程类别</th>
-                  <th>操作</th>
-                </tr>
+              <tr>
+                <th>课程名称</th>
+                <th>课程描述</th>
+                <th>授课教师</th>
+                <th>学分</th>
+                <th>周学时</th>
+                <th>课程类别</th>
+                <th>操作</th>
+              </tr>
               </thead>
               <tbody id="courseListBody">
-                <template v-if="isLoading">
-                  <tr>
-                    <td colspan="7" class="loading-placeholder">
-                      正在加载数据... <i class="fas fa-spinner fa-spin"></i>
-                    </td>
-                  </tr>
-                </template>
-                <template v-else-if="courses.length === 0">
-                  <tr>
-                    <td colspan="7" class="no-data-placeholder">
-                      未查询到符合条件的课程。
-                    </td>
-                  </tr>
-                </template>
-                <template v-else>
-                  <tr v-for="course in paginatedCourses" :key="course.id">
-                    <td>{{ course.course_name }}</td>
-                    <td>{{ course.course_description }}</td>
-                    <td>{{ course.teacher_name }}</td>
-                    <td>{{ course.credit }}</td>
-                    <td>{{ course.hours_per_week }}</td>
-                    <td>{{ course.category }}</td>
-                    <td>
-                      <button
+              <template v-if="isLoading">
+                <tr>
+                  <td colspan="7" class="loading-placeholder">
+                    正在加载数据... <i class="fas fa-spinner fa-spin"></i>
+                  </td>
+                </tr>
+              </template>
+              <template v-else-if="courses.length === 0">
+                <tr>
+                  <td colspan="7" class="no-data-placeholder">
+                    未查询到符合条件的课程。
+                  </td>
+                </tr>
+              </template>
+              <template v-else>
+                <tr v-for="course in paginatedCourses" :key="course.id">
+                  <td>{{ course.course_name }}</td>
+                  <td>{{ course.course_description }}</td>
+                  <td>{{ course.teacher_name }}</td>
+                  <td>{{ course.credit }}</td>
+                  <td>{{ course.hours_per_week }}</td>
+                  <td>{{ course.category }}</td>
+                  <td>
+                    <button
                         class="btn btn-sm btn-primary"
                         @click="openSectionModal(course.course_id)"
-                      >
-                        <FontAwesomeIcon icon="fas fa-circle" />
-                        开课详情
-                      </button>
-                      <button
+                    >
+                      <FontAwesomeIcon icon="fas fa-circle" />
+                      开课详情
+                    </button>
+                    <button
                         class="btn btn-sm btn-danger"
                         @click="deleteTheCourse(course.course_id)"
-                      >
-                        <FontAwesomeIcon icon="fas fa-trash" /> 删除
-                      </button>
-                    </td>
-                  </tr>
-                </template>
+                    >
+                      <FontAwesomeIcon icon="fas fa-trash" /> 删除
+                    </button>
+                  </td>
+                </tr>
+              </template>
               </tbody>
             </table>
           </div>
         </div>
 
         <div
-          class="pagination-controls"
-          id="paginationControls"
-          :style="{ display: courses.length > 0 ? 'flex' : 'none' }"
+            class="pagination-controls"
+            id="paginationControls"
+            :style="{ display: courses.length > 0 ? 'flex' : 'none' }"
         >
           <button
-            class="btn btn-sm btn-default"
-            id="prevPageBtn"
-            :disabled="currentPage === 1"
-            @click="prevPage"
+              class="btn btn-sm btn-default"
+              id="prevPageBtn"
+              :disabled="currentPage === 1"
+              @click="prevPage"
           >
             « 上一页
           </button>
           <span id="pageInfo"
-            >第 {{ currentPage }} / {{ totalPages }} 页 (共
+          >第 {{ currentPage }} / {{ totalPages }} 页 (共
             {{ courses.length }} 条)</span
           >
           <button
-            class="btn btn-sm btn-default"
-            id="nextPageBtn"
-            :disabled="currentPage === totalPages || totalPages === 0"
-            @click="nextPage"
+              class="btn btn-sm btn-default"
+              id="nextPageBtn"
+              :disabled="currentPage === totalPages || totalPages === 0"
+              @click="nextPage"
           >
             下一页 »
           </button>
@@ -135,26 +135,26 @@
           <div class="card create-course-card">
             <h2 class="card-title">新建课程</h2>
             <form
-              @submit.prevent="createTheCourse"
-              id="createCourseForm"
-              class="create-form-grid"
+                @submit.prevent="createTheCourse"
+                id="createCourseForm"
+                class="create-form-grid"
             >
               <div class="form-group">
                 <label for="newCourseName">课程名称:</label>
                 <input
-                  type="text"
-                  id="newCourseName"
-                  v-model="newCourse.course_name"
-                  placeholder="输入课程名称"
-                  required
+                    type="text"
+                    id="newCourseName"
+                    v-model="newCourse.course_name"
+                    placeholder="输入课程名称"
+                    required
                 />
               </div>
               <div class="form-group">
                 <label for="newCourseDescription">课程描述:</label>
                 <textarea
-                  id="newCourseDescription"
-                  v-model="newCourse.course_description"
-                  placeholder="输入课程描述"
+                    id="newCourseDescription"
+                    v-model="newCourse.course_description"
+                    placeholder="输入课程描述"
                 ></textarea>
               </div>
               <!--              <div class="form-group">-->
@@ -170,21 +170,21 @@
               <div class="form-group">
                 <label for="newCourseTeacher">学分:</label>
                 <input
-                  type="text"
-                  id="newCourseTeacher"
-                  v-model="newCourse.credit"
-                  placeholder="输入课程学分"
-                  required
+                    type="text"
+                    id="newCourseTeacher"
+                    v-model="newCourse.credit"
+                    placeholder="输入课程学分"
+                    required
                 />
               </div>
               <div class="form-group">
                 <label for="newCourseTeacher">周学时:</label>
                 <input
-                  type="text"
-                  id="newCourseTeacher"
-                  v-model="newCourse.hours_per_week"
-                  placeholder="输入周学时(整数)"
-                  required
+                    type="text"
+                    id="newCourseTeacher"
+                    v-model="newCourse.hours_per_week"
+                    placeholder="输入周学时(整数)"
+                    required
                 />
               </div>
               <div class="form-group">
@@ -200,9 +200,9 @@
                   <FontAwesomeIcon icon="fas fa-plus" /> 创 建
                 </button>
                 <button
-                  type="reset"
-                  class="btn btn-secondary"
-                  @click="resetCreateForm"
+                    type="reset"
+                    class="btn btn-secondary"
+                    @click="resetCreateForm"
                 >
                   <FontAwesomeIcon icon="fas fa-undo" /> 重 置
                 </button>
@@ -212,10 +212,10 @@
         </div>
 
         <div
-          id="notificationArea"
-          class="notification"
-          :style="{ display: isNotificationVisible ? 'block' : 'none' }"
-          :class="notificationType"
+            id="notificationArea"
+            class="notification"
+            :style="{ display: isNotificationVisible ? 'block' : 'none' }"
+            :class="notificationType"
         >
           {{ notificationMessage }}
         </div>
@@ -224,18 +224,18 @@
 
     <!-- 开课详情模态框 -->
     <div
-      class="modal"
-      :style="{ display: showSectionModal ? 'block' : 'none' }"
-      @click.self="showSectionModal = false"
+        class="modal"
+        :style="{ display: showSectionModal ? 'block' : 'none' }"
+        @click.self="showSectionModal = false"
     >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">开课详情</h5>
             <button
-              type="button"
-              class="close"
-              @click="showSectionModal = false"
+                type="button"
+                class="close"
+                @click="showSectionModal = false"
             >
               <span>&times;</span>
             </button>
@@ -243,36 +243,36 @@
           <div class="modal-body">
             <table>
               <thead>
-                <tr>
-                  <th>学年</th>
-                  <th>学期</th>
-                  <th>上课时间</th>
-                  <th>容量</th>
-                  <th>教室地址</th>
-                  <th>操作</th>
-                </tr>
+              <tr>
+                <th>学年</th>
+                <th>学期</th>
+                <th>上课时间</th>
+                <th>容量</th>
+                <th>教室地址</th>
+                <th>操作</th>
+              </tr>
               </thead>
               <tbody>
-                <template
+              <template
                   v-for="section in courseSections"
                   :key="section.sectionId"
-                >
-                  <tr>
-                    <td>{{ section.secYear }}</td>
-                    <td>{{ section.semester }}</td>
-                    <td>{{ section.secTime }}</td>
-                    <td>{{ section.capacity }}</td>
-                    <td>{{ section.classroom_location }}</td>
-                    <td>
-                      <button
+              >
+                <tr>
+                  <td>{{ section.secYear }}</td>
+                  <td>{{ section.semester }}</td>
+                  <td>{{ section.secTime }}</td>
+                  <td>{{ section.capacity }}</td>
+                  <td>{{ section.classroom_location }}</td>
+                  <td>
+                    <button
                         class="btn btn-sm btn-danger"
                         @click="deleteTheSection(section.sectionId)"
-                      >
-                        <FontAwesomeIcon icon="fas fa-trash" /> 删除
-                      </button>
-                    </td>
-                  </tr>
-                </template>
+                    >
+                      <FontAwesomeIcon icon="fas fa-trash" /> 删除
+                    </button>
+                  </td>
+                </tr>
+              </template>
               </tbody>
             </table>
 
@@ -281,11 +281,11 @@
               <div class="form-group">
                 <label for="newSectionYear">学年:</label>
                 <input
-                  type="number"
-                  id="newSectionYear"
-                  v-model="newSection.sec_year"
-                  placeholder="输入学年"
-                  required
+                    type="number"
+                    id="newSectionYear"
+                    v-model="newSection.sec_year"
+                    placeholder="输入学年"
+                    required
                 />
               </div>
               <div class="form-group">
@@ -298,39 +298,39 @@
               <div class="form-group">
                 <label for="newSectionTime">上课时间:</label>
                 <input
-                  type="text"
-                  id="newSectionTime"
-                  v-model="newSection.sec_time"
-                  placeholder="例如: 周一 1-2节;周三 6-8节"
-                  required
+                    type="text"
+                    id="newSectionTime"
+                    v-model="newSection.sec_time"
+                    placeholder="例如: 周一 1-2节;周三 6-8节"
+                    required
                 />
               </div>
               <div class="form-group">
                 <label for="newSectionCapacity">容量:</label>
                 <input
-                  type="number"
-                  id="newSectionCapacity"
-                  v-model="newSection.capacity"
-                  placeholder="输入容量"
-                  required
+                    type="number"
+                    id="newSectionCapacity"
+                    v-model="newSection.capacity"
+                    placeholder="输入容量"
+                    required
                 />
                 <span v-if="capacityError" class="error-message">{{
-                  capacityError
-                }}</span>
+                    capacityError
+                  }}</span>
               </div>
               <div class="form-group">
                 <label for="newSectionClassroom">选择所在教室:</label>
                 <select
-                  id="newSectionClassroom"
-                  name="newSectionClassroom"
-                  v-model="newSection.classroom_id"
-                  required
+                    id="newSectionClassroom"
+                    name="newSectionClassroom"
+                    v-model.number="newSection.classroom_id"
+                    required
                 >
                   <option value="">-- 请选择教室 --</option>
                   <option
-                    v-for="classroom in classrooms"
-                    :key="classroom.classroom_id || classroom.classroomId"
-                    :value="classroom.classroom_id || classroom.classroomId"
+                      v-for="classroom in classrooms"
+                      :key="classroom.classroom_id || classroom.classroomId"
+                      :value="classroom.classroom_id || classroom.classroomId"
                   >
                     {{ classroom.classroom_location }} 最大容量：{{
                       classroom.classroom_capacity
@@ -361,7 +361,7 @@ import {
   deleteCourse,
   getMyCourseSections,
   deleteSection,
-  createSection,
+  createSection, getAvailableClassroom,
 } from "../../../api/info_manage/teacher";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useuserLoginStore } from "../../../store/userLoginStore";
@@ -432,8 +432,8 @@ const queryCourses = async () => {
     calculatePaginatedCourses();
     if (courses.value.length > 0) {
       showNotification(
-        `查询到 ${courses.value.length} 条符合条件的课程。`,
-        "success"
+          `查询到 ${courses.value.length} 条符合条件的课程。`,
+          "success"
       );
     } else {
       showNotification("未查询到符合条件的课程。", "info");
@@ -482,7 +482,7 @@ const deleteTheCourse = async (courseId: number) => {
         showNotification("内部错误。", "error");
       } else {
         courses.value = courses.value.filter(
-          (course) => course.course_id !== courseId
+            (course) => course.course_id !== courseId
         );
         calculateTotalPages();
         calculatePaginatedCourses();
@@ -594,26 +594,8 @@ const populateClassroom = async () => {
     sec_time: newSection.value.sec_time,
   };
   try {
-    // 空api
-    // const response = await getAvailableClassroom(filter);
-    // classrooms.value = response.data.data;
-    classrooms.value = [
-      {
-        classroom_id: 0,
-        classroom_location: "东1-102",
-        classroom_capacity: 100,
-      },
-      {
-        classroom_id: 1,
-        classroom_location: "东1-103",
-        classroom_capacity: 100,
-      },
-      {
-        classroom_id: 2,
-        classroom_location: "东1-104",
-        classroom_capacity: 100,
-      },
-    ];
+    const response = await getAvailableClassroom(filter);
+    classrooms.value = response.data.data;
   } catch (error) {
     showNotification("获取教室信息失败，请稍后重试。", "error");
     console.error("获取教室信息失败:", error);
@@ -628,12 +610,16 @@ const deleteTheSection = async (sectionId: number) => {
     try {
       const response = await deleteSection(sectionId);
       courseSections.value = courseSections.value.filter(
-        (section) => section.section_id !== sectionId
+          (section) => section.section_id !== sectionId
       );
       if (response.data.code != 200) {
         showNotification("开课信息删除失败，存在关联。", "error");
       } else {
         showNotification("开课信息删除成功。", "success");
+      }
+      if (currentCourseId.value !== null) {
+        // 调用 openSectionModal，它会重新获取数据并更新 courseSections.value
+        await openSectionModal(currentCourseId.value);
       }
     } catch (error) {
       showNotification("删除开课信息失败，请稍后重试。", "error");
@@ -647,17 +633,18 @@ const deleteTheSection = async (sectionId: number) => {
 // 新建开课信息
 const createTheSection = async () => {
   if (!currentCourseId.value) return;
+  console.log("newSection.value 在发送请求前:", newSection.value);
 
   const selectedClassroom = classrooms.value.find(
-    (classroom) =>
-      classroom.classroom_id === Number(newSection.value.classroom_id)
+      (classroom) =>
+          classroom.classroom_id === Number(newSection.value.classroom_id)
   );
 
   // 验证容量
   if (
-    newSection.value.capacity &&
-    selectedClassroom &&
-    newSection.value.capacity > selectedClassroom.classroom_capacity
+      newSection.value.capacity &&
+      selectedClassroom &&
+      newSection.value.capacity > selectedClassroom.classroom_capacity
   ) {
     capacityError.value = "输入的容量不能超过所选教室的最大容量。";
     return;
@@ -668,8 +655,8 @@ const createTheSection = async () => {
   showNotification("正在创建开课信息...", "info");
   try {
     const response = await createSection(
-      currentCourseId.value,
-      newSection.value
+        currentCourseId.value,
+        newSection.value
     );
     if (response.data.code != 200) {
       showNotification("开课创建失败，内部错误", "error");
@@ -692,11 +679,11 @@ onMounted(() => {
     const userInfoToggle = document.getElementById("userInfoToggle");
     const userDropdown = document.getElementById("userDropdown");
     if (
-      isUserDropdownVisible.value &&
-      userInfoToggle &&
-      userDropdown &&
-      !userInfoToggle.contains(event.target as Node) &&
-      !userDropdown.contains(event.target as Node)
+        isUserDropdownVisible.value &&
+        userInfoToggle &&
+        userDropdown &&
+        !userInfoToggle.contains(event.target as Node) &&
+        !userDropdown.contains(event.target as Node)
     ) {
       isUserDropdownVisible.value = false;
     }
@@ -709,7 +696,7 @@ onMounted(() => {
 /* 原有的样式代码保持不变 */
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  "Helvetica Neue", Arial, "Noto Sans", sans-serif;
   margin: 0;
   background-color: #f8f9fa;
   color: #333;

@@ -12,15 +12,15 @@
             <div class="form-group">
               <label for="requestCourse">选择课程:</label>
               <select
-                id="requestCourse"
-                name="courseId"
-                v-model="selectedCourseId"
-                @change="populateSectionSelect"
+                  id="requestCourse"
+                  name="courseId"
+                  v-model="selectedCourseId"
+                  @change="populateSectionSelect"
               >
                 <option
-                  v-for="course in courses"
-                  :key="course.course_id"
-                  :value="course.course_id"
+                    v-for="course in courses"
+                    :key="course.course_id"
+                    :value="course.course_id"
                 >
                   {{ course.course_name }}
                 </option>
@@ -28,10 +28,10 @@
             </div>
             <div class="form-action-group">
               <button
-                type="button"
-                class="btn btn-primary"
-                :disabled="!selectedCourseId"
-                @click="loadCourseDetails"
+                  type="button"
+                  class="btn btn-primary"
+                  :disabled="!selectedCourseId"
+                  @click="loadCourseDetails"
               >
                 <FontAwesomeIcon icon="fas fa-cogs" /> 加载课程详情
               </button>
@@ -40,27 +40,27 @@
         </div>
 
         <div
-          class="card course-details-card"
-          id="courseDetailsCard"
-          :style="{ display: showCourseDetails ? 'block' : 'none' }"
+            class="card course-details-card"
+            id="courseDetailsCard"
+            :style="{ display: showCourseDetails ? 'block' : 'none' }"
         >
           <h2 class="card-title">
             <FontAwesomeIcon icon="fas fa-book-open" /> 课程《<span
               id="editingCourseNameTitle"
-              >{{ selectedCourse }}</span
-            >》信息编辑
+          >{{ selectedCourse }}</span
+          >》信息编辑
           </h2>
           <form id="editCourseDetailsForm" @submit.prevent="saveCourseDetails">
             <div class="form-group">
               <label for="courseCodeDisplay">课程名称:</label>
               <input
-                type="text"
-                id="courseCodeDisplay"
-                v-model="currentCourse.course_name"
+                  type="text"
+                  id="courseCodeDisplay"
+                  v-model="currentCourse.course_name"
               />
               <span
-                class="character-count"
-                :class="{
+                  class="character-count"
+                  :class="{
                   'near-limit':
                     currentCourse.course_name &&
                     currentCourse.course_name.length > 60,
@@ -68,23 +68,23 @@
               >
                 {{
                   currentCourse.course_name
-                    ? currentCourse.course_name.length
-                    : 0
+                      ? currentCourse.course_name.length
+                      : 0
                 }}/80
               </span>
             </div>
             <div class="form-group">
               <label for="courseCreditsDisplay">学分:</label>
               <input
-                type="number"
-                id="courseCreditsDisplay"
-                v-model="currentCourse.credit"
-                min="0.1"
-                step="0.1"
+                  type="number"
+                  id="courseCreditsDisplay"
+                  v-model="currentCourse.credit"
+                  min="0.1"
+                  step="0.1"
               />
               <span
-                class="character-count"
-                :class="{
+                  class="character-count"
+                  :class="{
                   'near-limit':
                     currentCourse.credit && Number(currentCourse.credit) > 15,
                 }"
@@ -95,10 +95,10 @@
             <div class="form-group">
               <label for="courseIntroduction">课程类别:</label>
               <select
-                id="courseCategory"
-                name="Category"
-                v-model="currentCourse.category"
-                readonly
+                  id="courseCategory"
+                  name="Category"
+                  v-model="currentCourse.category"
+                  readonly
               >
                 <option>{{ currentCourse.category }}</option>
                 <option>体育</option>
@@ -112,15 +112,15 @@
             <div class="form-group">
               <label for="courseIntroduction">课程简介:</label>
               <textarea
-                id="courseIntroduction"
-                name="introduction"
-                rows="5"
-                v-model="currentCourse.course_description"
-                placeholder="请输入课程简介..."
+                  id="courseIntroduction"
+                  name="introduction"
+                  rows="5"
+                  v-model="currentCourse.course_description"
+                  placeholder="请输入课程简介..."
               ></textarea>
               <span
-                class="character-count"
-                :class="{
+                  class="character-count"
+                  :class="{
                   'near-limit':
                     currentCourse.course_description &&
                     currentCourse.course_description.length > 800,
@@ -128,31 +128,31 @@
               >
                 {{
                   currentCourse.course_description
-                    ? currentCourse.course_description.length
-                    : 0
+                      ? currentCourse.course_description.length
+                      : 0
                 }}/1000
               </span>
             </div>
 
             <div class="form-actions">
               <button
-                type="submit"
-                class="btn btn-primary"
-                @click="saveCourseDetails"
+                  type="submit"
+                  class="btn btn-primary"
+                  @click="saveCourseDetails"
               >
                 <FontAwesomeIcon icon="fas fa-save" /> 保存并提交修改
               </button>
               <button
-                type="button"
-                class="btn btn-default"
-                @click="resetCourseEdit"
+                  type="button"
+                  class="btn btn-default"
+                  @click="resetCourseEdit"
               >
                 <FontAwesomeIcon icon="fas fa-circle" /> 重置
               </button>
               <button
-                type="button"
-                class="btn btn-default"
-                @click="cancelCourseEdit"
+                  type="button"
+                  class="btn btn-default"
+                  @click="cancelCourseEdit"
               >
                 <FontAwesomeIcon icon="fas fa-times" /> 取消
               </button>
@@ -160,38 +160,38 @@
             <div class="form-group">
               <label for="requestStudent">选择开课时间:</label>
               <select
-                id="requestStudent"
-                name="studentId"
-                v-model="selectedSection"
-                :disabled="!selectedCourseId"
+                  id="requestStudent"
+                  name="studentId"
+                  v-model="selectedSection"
+                  :disabled="!selectedCourseId"
               >
                 <option value="">-- 请选择开课时间 --</option>
                 <option
-                  v-for="section in sections"
-                  :key="section.section_id || section.sectionId"
-                  :value="section.section_id || section.sectionId"
+                    v-for="section in sections"
+                    :key="section.section_id || section.sectionId"
+                    :value="section.section_id || section.sectionId"
                 >
                   {{ section.sec_year || section.secYear }} 学年
                   {{ section.semester }} 学期
                   {{
                     section.classroom_location
-                      ? ` - ${section.classroom_location}`
-                      : ""
+                        ? ` - ${section.classroom_location}`
+                        : ""
                   }}
                   {{
                     section.sec_time || section.secTime
-                      ? `(${section.sec_time || section.secTime})`
-                      : ""
+                        ? `(${section.sec_time || section.secTime})`
+                        : ""
                   }}
                 </option>
               </select>
             </div>
             <div class="form-action-group">
               <button
-                type="button"
-                class="btn btn-primary"
-                :disabled="!selectedSection"
-                @click="loadSectionDetails"
+                  type="button"
+                  class="btn btn-primary"
+                  :disabled="!selectedSection"
+                  @click="loadSectionDetails"
               >
                 <FontAwesomeIcon icon="fas fa-cogs" /> 加载开课详情
               </button>
@@ -200,33 +200,33 @@
         </div>
 
         <div
-          class="card course-details-card"
-          id="courseDetailsCard"
-          :style="{ display: showSectionDetails ? 'block' : 'none' }"
+            class="card course-details-card"
+            id="courseDetailsCard"
+            :style="{ display: showSectionDetails ? 'block' : 'none' }"
         >
           <h2 class="card-title">
             <FontAwesomeIcon icon="fas fa-book-open" /> 课程《<span
               id="editingCourseNameTitle"
-              >{{ selectedCourse }}</span
-            >》开课信息编辑
+          >{{ selectedCourse }}</span
+          >》开课信息编辑
           </h2>
           <form id="editCourseDetailsForm" @submit.prevent="saveSectionDetails">
             <div class="form-group">
               <label for="courseCodeDisplay">所在学年:</label>
               <input
-                type="number"
-                id="courseYearDisplay"
-                v-model="currentSection.sec_year"
-                required
+                  type="number"
+                  id="courseYearDisplay"
+                  v-model="currentSection.sec_year"
+                  required
               />
             </div>
             <div class="form-group">
               <label for="courseCreditsDisplay">所在学期</label>
               <select
-                id="courseSemesterDisplay"
-                name="Category"
-                v-model="currentSection.semester"
-                required
+                  id="courseSemesterDisplay"
+                  name="Category"
+                  v-model="currentSection.semester"
+                  required
               >
                 <option value="">请选择学期</option>
                 <option value="春夏">春夏</option>
@@ -236,70 +236,70 @@
             <div class="form-group">
               <label for="courseCreditsDisplay">上课时间:</label>
               <input
-                type="text"
-                id="courseTimeDisplay"
-                v-model="currentSection.sec_time"
-                placeholder="例如: 周一 1-2节;周三 6-8节"
-                required
+                  type="text"
+                  id="courseTimeDisplay"
+                  v-model="currentSection.sec_time"
+                  placeholder="例如: 周一 1-2节;周三 6-8节"
+                  required
               />
             </div>
             <div class="form-group">
               <label for="courseCreditsDisplay">课程容量:</label>
               <input
-                type="number"
-                id="courseCapacityDisplay"
-                v-model="currentSection.capacity"
-                min="1"
-                required
+                  type="number"
+                  id="courseCapacityDisplay"
+                  v-model="currentSection.capacity"
+                  min="1"
+                  required
               />
             </div>
             <div class="form-group">
               <label for="courseCreditsDisplay">教室地址:</label>
               <input
-                type="text"
-                id="courseClassroomDisplay"
-                readonly
-                v-model="currentSection.classroom_location"
+                  type="text"
+                  id="courseClassroomDisplay"
+                  readonly
+                  v-model="currentSection.classroom_location"
               />
             </div>
             <div class="form-group">
               <label for="courseCreditsDisplay">教室容量:</label>
               <input
-                type="text"
-                id="courseAvailableCapacityDisplay"
-                readonly
-                v-model="currentSection.classroom_capacity"
+                  type="text"
+                  id="courseAvailableCapacityDisplay"
+                  readonly
+                  v-model="currentSection.classroom_capacity"
               />
             </div>
             <div class="form-group">
               <label for="courseCreditsDisplay">剩余容量:</label>
               <input
-                type="text"
-                id="courseAvailableCapacityDisplay"
-                readonly
-                v-model="currentSection.available_capacity"
+                  type="text"
+                  id="courseAvailableCapacityDisplay"
+                  readonly
+                  v-model="currentSection.available_capacity"
               />
             </div>
 
             <div class="form-actions">
               <button
-                type="submit"
-                class="btn btn-primary"
-                @click="saveSectionDetails"
+                  type="submit"
+                  class="btn btn-primary"
+                  @click="saveSectionDetails"
               >
                 <FontAwesomeIcon icon="fas fa-save" /> 保存并提交修改
               </button>
               <button
-                type="button"
-                class="btn btn-default"
-                @click="resetSectionEdit"
+                  type="button"
+                  class="btn btn-default"
+                  @click="resetSectionEdit"
               >
                 <FontAwesomeIcon icon="fas fa-circle" /> 重置
               </button>
               <button
-                type="button"
-                class="btn btn-default"
-                @click="cancelSectionEdit"
+                  type="button"
+                  class="btn btn-default"
+                  @click="cancelSectionEdit"
               >
                 <FontAwesomeIcon icon="fas fa-times" /> 取消
               </button>
@@ -308,10 +308,10 @@
         </div>
 
         <div
-          id="notificationArea"
-          class="notification"
-          :class="notification.type"
-          :style="{ display: notification.message ? 'block' : 'none' }"
+            id="notificationArea"
+            class="notification"
+            :class="notification.type"
+            :style="{ display: notification.message ? 'block' : 'none' }"
         >
           {{ notification.message }}
         </div>
@@ -399,104 +399,7 @@ const handleChangePassword = () => {
   router.push("/change-password");
 };
 
-// const MockCourses = {
-//   item: [
-//     {
-//       course_id: "121",
-//       course_name: "课1",
-//       course_description: "adwd",
-//       category: "adawd",
-//       credit: 12,
-//     },
-//     {
-//       course_id: "122",
-//       course_name: "课2",
-//     },
-//     {
-//       course_id: "123",
-//       course_name: "课3",
-//     },
-//   ],
-// };
-//
-// const getMyCourses = async (params: any) => {
-//   return MockCourses;
-// };
-//
-// const MockCoursesDetails = {
-//   data: {
-//     course_id: "121",
-//     course_name: "课1",
-//     course_description: "adwd",
-//     category: "adawd",
-//     credit: 12,
-//   },
-// };
-//
-// const getCourseDetails = async (params: any) => {
-//   return MockCoursesDetails;
-// };
-//
-// const MockSections = {
-//   data: [
-//     {
-//       section_id: "212",
-//       sec_year: 1999,
-//       semester: "awdawd",
-//     },
-//     {
-//       section_id: "awdwd",
-//       sec_year: 2000,
-//       semester: "aw22awd",
-//     },
-//   ],
-// };
-//
-// const getMyCourseSections = async (params: any) => {
-//   return MockSections;
-// };
-//
-// const MockSectionsDetails = {
-//   data: {
-//     section_id: "212",
-//     sec_year: 1999,
-//     semester: "awdawd",
-//     sec_time: "awdawd",
-//     classroom_location: "wdawd",
-//     capacity: 21,
-//     available_capacity: 12,
-//   },
-// };
-//
-// const getSectionDetails = async (params: any) => {
-//   return MockSectionsDetails;
-// };
-//
-// const MockSectionGrades = {
-//   data: {
-//     student_info: [
-//       {
-//         user_id: "11",
-//         name: "wwad",
-//       },
-//       {
-//         user_id: "12",
-//         name: "wwa123d",
-//       },
-//     ],
-//     grade_info: [
-//       {
-//         grade_base: {
-//           score: 111,
-//         },
-//       },
-//     ],
-//   },
-// };
-//
-// const getSectionGrades = async (params: any) => {
-//   return MockSectionGrades;
-// };
+
 
 const populateCourseSelect = async () => {
   courses.value = [];
@@ -555,8 +458,8 @@ const populateSectionSelect = async () => {
       } else if (response.data.data && Array.isArray(response.data.data)) {
         sections.value = response.data.data;
       } else if (
-        response.data.data &&
-        Array.isArray(response.data.data.items)
+          response.data.data &&
+          Array.isArray(response.data.data.items)
       ) {
         sections.value = response.data.data.items;
       } else {
@@ -585,8 +488,8 @@ const loadCourseDetails = async () => {
     selectedCourse.value = response.data.data.course_name;
     showCourseDetails.value = true;
     showNotification(
-      `已加载课程《${currentCourse.value.course_name}》的详细信息。`,
-      "info"
+        `已加载课程《${currentCourse.value.course_name}》的详细信息。`,
+        "info"
     );
   } catch (error) {
     showNotification("无法加载课程详情。", "error");
@@ -597,9 +500,9 @@ const loadCourseDetails = async () => {
 
 const saveCourseDetails = async () => {
   if (
-    !currentCourse.value.course_name ||
-    !currentCourse.value.course_description ||
-    !currentCourse.value.credit
+      !currentCourse.value.course_name ||
+      !currentCourse.value.course_description ||
+      !currentCourse.value.credit
   ) {
     showNotification("课程名称,简介,学分不能为空", "error");
     return;
@@ -639,8 +542,8 @@ const saveCourseDetails = async () => {
     selectedCourse.value = currentCourse.value.course_name;
     await populateCourseSelect();
     showNotification(
-      `课程《${currentCourse.value.course_name}》的课程信息已成功更新！`,
-      "success"
+        `课程《${currentCourse.value.course_name}》的课程信息已成功更新！`,
+        "success"
     );
   } catch (error) {
     showNotification("保存课程信息失败，请稍后重试。", "error");
@@ -698,8 +601,8 @@ const loadSectionDetails = async () => {
 
       showSectionDetails.value = true;
       showNotification(
-        `已加载课程《${currentCourse.value.course_name}》的开课信息。`,
-        "info"
+          `已加载课程《${currentCourse.value.course_name}》的开课信息。`,
+          "info"
       );
     } else {
       showNotification("获取开课详情失败，返回数据为空", "error");
@@ -717,10 +620,10 @@ const saveSectionDetails = async () => {
 
   // 检查所有必填字段
   if (
-    !currentSection.value.sec_year ||
-    !currentSection.value.semester ||
-    !currentSection.value.sec_time ||
-    !currentSection.value.capacity
+      !currentSection.value.sec_year ||
+      !currentSection.value.semester ||
+      !currentSection.value.sec_time ||
+      !currentSection.value.capacity
   ) {
     console.error("缺少必填字段:", {
       sec_year: currentSection.value.sec_year,
@@ -763,8 +666,8 @@ const saveSectionDetails = async () => {
     } else {
       await populateSectionSelect();
       showNotification(
-        `课程《${currentCourse.value.course_name}》的开课信息已成功更新！`,
-        "success"
+          `课程《${currentCourse.value.course_name}》的开课信息已成功更新！`,
+          "success"
       );
     }
   } catch (error) {
@@ -804,7 +707,7 @@ onMounted(() => {
 /* 这里可以复用原有的 CSS 样式 */
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  "Helvetica Neue", Arial, "Noto Sans", sans-serif;
   margin: 0;
   background-color: #f4f6f8;
   color: #333;

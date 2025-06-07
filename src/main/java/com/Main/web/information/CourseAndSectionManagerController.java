@@ -355,4 +355,33 @@ public class CourseAndSectionManagerController {
             return ResponseEntity.ok(ApiResponseListDTO.error(500, "服务器内部错误"));
         }
     }
+    /** 获取可用教室列表
+     * @param sec_year 开课学年
+     * @param semester 开课学期
+     * @param sec_time 开课时间
+     * @return 可用教室列表
+     */
+    @GetMapping("/classrooms")
+    public ResponseEntity<ApiResponseListDTO<Classroom>> getAvailableClassrooms(
+            @RequestParam(value = "sec_year", required = false, defaultValue = "0") Integer sec_year,
+            @RequestParam(value = "semester", required = false) String semester,
+            @RequestParam(value = "sec_time", required = false) String sec_time
+    ){
+        try{
+            logger.info("获取可用教室列表: sec_year={}, semester={}, sec_time={}",
+                    sec_year, semester, sec_time);
+            // 获取可用教室列表
+            List<Classroom> classrooms = classroomService.getAvailableClassrooms(sec_year, semester, sec_time);
+            if (classrooms.isEmpty()) {
+                logger.warn("没有可用教室");
+                return ResponseEntity.ok(ApiResponseListDTO.error(404, "没有可用教室"));
+            }
+            return ResponseEntity.ok(ApiResponseListDTO.success("获取成功", classrooms));
+        }
+        catch (Exception e){
+            logger.error("获取可用教室列表过程中发生未知错误", e);
+            return ResponseEntity.ok(ApiResponseListDTO.error(500, "查询教室出现未知错误"));
+        }
+    }
+
 }
