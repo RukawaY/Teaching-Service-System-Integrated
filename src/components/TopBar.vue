@@ -5,7 +5,8 @@
       <el-icon size="30px" @click="isSidebarVisible.toggle()" class="sidebar-toggle-icon">
         <Operation />
       </el-icon>
-      <el-icon size="30px" v-if="router.currentRoute.value.path !== '/home' && user !== 'invalid'" @click="goToHome()" class="back-icon"><Back /></el-icon>
+      <el-icon size="30px" v-if="!router.currentRoute.value.path.startsWith('/online_test/test') && router.currentRoute.value.path !== '/home' && user !== 'invalid'" @click="goToHome()" class="back-icon"><HomeFilled /></el-icon>
+      <el-icon size="30px" v-if="router.currentRoute.value.path !== '/home'" @click="goBack()" class="back-icon"><Back /></el-icon>
       <span class="system-name">{{ pageTitle }}</span>
       <span class="sub-system-name" v-if="router.currentRoute.value.path === '/home' && user !== 'invalid'">{{ relfect_name(activeModule.get()) }}</span>
     </div>
@@ -65,7 +66,7 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ArrowDown, Back, Operation, Search, Close } from '@element-plus/icons-vue'
+import { ArrowDown, Back, Operation, Search, Close, HomeFilled } from '@element-plus/icons-vue'
 import { inject, computed, ref, nextTick } from 'vue'
 import { useuserLoginStore } from '../store/userLoginStore'
 
@@ -200,11 +201,18 @@ function goToHome() {
 }
 
 const pageTitle = computed(() => {
-  if (router.currentRoute.value.path === '/home' || router.currentRoute.value.path === '/' || router.currentRoute.value.path === '/login') {
+  const currentPath = router.currentRoute.value.path
+  if (currentPath === '/home' || currentPath === '/' || currentPath === '/login') {
     return '教学服务系统'
   } else {
+    if (currentPath.startsWith('/online_test/enterTest')) {
+      return '考试准备'
+    }
+    if (currentPath.startsWith('/online_test/test')) {
+      return '在线考试'
+    }
     // 返回对应页面的标题
-    switch (router.currentRoute.value.path) {
+    switch (currentPath) {
       case '/course_selection/chooseCurriculum':
         return '定制培养方案'
       case '/course_selection/showCurriculum':
@@ -308,6 +316,10 @@ const relfect_name = (module) => {
     case 'resourceSharing':
       return '课程资源共享子模块'
   }
+}
+
+const goBack = () => {
+  router.back()
 }
 </script>
 
