@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS GradeComponent (
     component_id INT PRIMARY KEY AUTO_INCREMENT,
     component_name VARCHAR(255) NOT NULL,
     grade_id INT NOT NULL,
-    component_type ENUM('0', '1', '2') NOT NULL,
+    component_type ENUM('0', '1', '2') NOT NULL, -- 0-考勤, 1-测试, 2-作业
     ratio INT NOT NULL,
     score INT,
     FOREIGN KEY (grade_id) REFERENCES GradeBase(grade_id)
@@ -302,10 +302,10 @@ INSERT INTO GradeBase (student_id, course_id, section_id, score, gpa, submit_sta
 
 -- 成绩组成
 INSERT INTO GradeComponent (component_name, grade_id, component_type, ratio, score) VALUES
-('期中考试', 1, '0', 50, 45),
+('期中考试', 1, '1', 50, 45),
 ('期末考试', 1, '1', 50, 45),
 ('作业', 2, '2', 20, 17),
-('项目', 2, '0', 30, 25),
+('项目', 2, '2', 30, 25),
 ('期末考试', 2, '1', 50, 43);
 
 -- 成绩修改申请
