@@ -31,7 +31,7 @@ public class RssCourseService {
     public List<Course> getCourseListByStudentId(Integer studentId) {
         // 假设有student_course表维护学生与课程关联关系
         String sql = "SELECT c.* FROM course c " +
-                "JOIN student_course sc ON c.course_id = sc.course_id " +
+                "JOIN gradebase sc ON c.course_id = sc.course_id " +
                 "WHERE sc.student_id = ?";
         return jdbcTemplate.query(sql, new CourseRowMapper(), studentId);
     }
