@@ -20,6 +20,14 @@ mvn clean package dependency:build-classpath -Dmdep.outputFile=cp.txt
 java -cp target/classes:$(cat cp.txt) com.Main.AppConfig
 ```
 
+windows:
+
+```bash
+mvn clean package dependency:build-classpath "-Dmdep.outputFile=cp.txt"
+$classpath = "target\classes;" + (Get-Content cp.txt -Raw).Replace("`r`n", ";").Replace("`n", ";")
+java -cp $classpath com.Main.AppConfig
+``` 
+
 ## 前端
 
 首先切换到`front-end`目录下。

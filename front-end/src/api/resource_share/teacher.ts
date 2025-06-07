@@ -187,49 +187,36 @@ export const getHomeworkWeight = async (homeworkId: number): Promise<ApiResponse
   }
 }
 
-// 新增：考勤相关接口参数定义
-interface AttendanceRecord {
-  studentName: string;
-  courseName: string;
-  score: number;
+
+// 新增：处理考勤成绩接口参数（与后端AttendanceComponentDTO完全匹配）
+interface ProcessAttendanceParams {
+  studentId: number;          // 对应后端student_id
+  courseName: string;         // 对应后端course_name
+  attendanceScore: number;    // 新增：对应后端attendance_score（考勤得分）
+  attendanceRatio: number;    // 原weight改为attendanceRatio，对应后端attendance_ratio（考勤比例）
 }
 
-interface SetAttendanceWeightParams {
-  courseName: string;
-  weight: number;
-}
-
-// 新增：获取教师课程列表接口
-export const getTeacherCourses = async (teacherName: string): Promise<ApiResponse<string[]>> => {
+// 新增：获取教师课程列表接口（保持原逻辑，路径与后端@GetMapping("/courses/teacher")匹配）
+export const getTeacherCourses = async (teacherId: number): Promise<ApiResponse<string[]>> => {
   try {
-    const response = await request.get(`/api/attendance/courses?teacherName=${teacherName}`);
+    const response = await request.get(`/api/attendance/courses/teacher?teacherId=${teacherId}`);
     return response.data;
   } catch (error) {
     throw new Error('获取教师课程列表失败');
   }
 };
 
-// 新增：保存考勤记录接口
-export const saveAttendanceRecord = async (record: AttendanceRecord): Promise<ApiResponse<boolean>> => {
+// 处理考勤成绩接口（修正参数，与后端POST /api/attendance/process匹配）
+export const processAttendanceRecord = async (params: ProcessAttendanceParams): Promise<ApiResponse<boolean>> => {
   try {
-    const response = await request.post('/api/attendance/records', record);
+    const response = await request.post('/api/attendance/process', params);  // 直接传递完整参数对象
     return response.data;
   } catch (error) {
-    throw new Error('保存考勤记录失败');
+    throw new Error('处理考勤记录失败');
   }
 };
 
-// 新增：设置考勤比例接口
-export const setAttendanceWeightApi = async (params: SetAttendanceWeightParams): Promise<ApiResponse<boolean>> => {
-  try {
-    const response = await request.post('/api/attendance/weight', params);
-    return response.data;
-  } catch (error) {
-    throw new Error('设置考勤比例失败');
-  }
-};
-
-// 导出新增接口
+// 调整导出接口（移除旧接口，添加新接口）
 export const teacherAPI = {
   getHomeworkList,
   getHomeworkSubmissions,
@@ -240,8 +227,7 @@ export const teacherAPI = {
   assignHomework,
   getHomeworkWeight,
   getTeacherCourses,
-  saveAttendanceRecord,
-  setAttendanceWeightApi,
+  processAttendanceRecord,  
 };
 
 export default teacherAPI
