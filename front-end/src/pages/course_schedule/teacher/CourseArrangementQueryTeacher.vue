@@ -22,7 +22,12 @@
             <el-form-item label="学年" class="filter-item">
               <el-input v-model="filterForm.sec_year" placeholder="请输入学年" style="width: 200px" />
             </el-form-item>
-            <el-button type="primary" @click="handleQuery" :loading="loading">
+            <el-button 
+              type="primary" 
+              @click="handleQuery" 
+              :loading="loading"
+              :disabled="!currentTeacherId || userStore.loginUser.role !== 't'"
+            >
               查询
             </el-button>
           </div>
@@ -31,7 +36,18 @@
     </el-card>
 
     <el-card class="schedule-card">
-      <div class="schedule-container">
+      <!-- 未登录或非教师提示 -->
+      <div v-if="!currentTeacherId || userStore.loginUser.role !== 't'" class="no-permission-tip">
+        <el-alert
+          title="权限提示"
+          description="请使用教师账号登录后查看课程安排"
+          type="warning"
+          show-icon
+          :closable="false"
+        />
+      </div>
+      
+      <div v-else class="schedule-container">
         <table class="schedule-table">
           <thead>
             <tr>
@@ -70,13 +86,20 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, computed } from 'vue';
 import { ElMessage } from 'element-plus';
 import axios from 'axios';
+import { useuserLoginStore } from '../../../store/userLoginStore';
 
-// 固定教师信息（张老师）
-const currentTeacher = ref('张老师');
-const currentTeacherId = ref(212); // 注意：这里改为数值类型，与测试数据一致
+// 获取用户登录状态
+const userStore = useuserLoginStore();
+
+// 从登录用户信息中获取教师信息
+const currentTeacher = computed(() => userStore.loginUser.name || '未登录');
+const currentTeacherId = computed(() => {
+  const userId = userStore.loginUser.user_id;
+  return userId !== "null" ? parseInt(userId) : null;
+});
 const filterForm = reactive({
   semester: '春夏', // 默认学期
   sec_year: new Date().getFullYear().toString(), // 默认当前学年
@@ -151,6 +174,12 @@ const getTimeSlotByPeriod = (period) => {
 };
 
 const handleQuery = async () => {
+  // 检查是否已登录且为教师
+  if (!currentTeacherId.value || userStore.loginUser.role !== 't') {
+    ElMessage.error('请先登录教师账号');
+    return;
+  }
+  
   loading.value = true;
   scheduleData.value = [];
   try {
@@ -259,7 +288,10 @@ const getDayOfWeekFromString = (dayStr) => {
 };
 
 onMounted(() => {
-  handleQuery(); // 页面加载时自动查询课表
+  // 只有在用户已登录且为教师时才自动查询课表
+  if (currentTeacherId.value && userStore.loginUser.role === 't') {
+    handleQuery();
+  }
 });
 </script>
 
@@ -352,5 +384,10 @@ onMounted(() => {
 .time-range {
   font-size: 0.8em;
   color: #888;
+}
+
+.no-permission-tip {
+  padding: 20px;
+  text-align: center;
 }
 </style>
