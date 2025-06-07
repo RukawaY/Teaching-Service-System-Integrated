@@ -113,3 +113,12 @@ export const getMyCourseSections = async (courseId: any, params: any) => {
     params: params,
   });
 };
+
+// 教师获取可用的教室列表
+export const getAvailableClassroom = async (filter: any) => {
+  return await apiClient.request({
+    url: "/teacher/classrooms",
+    method: "GET",
+    params: filter,
+  });
+}
