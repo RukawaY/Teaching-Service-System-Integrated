@@ -82,7 +82,7 @@ public class CourseService {
         }
 
         // 添加排序和分页
-        querySql.append(" ORDER BY c.course_id ASC LIMIT ? OFFSET ?");
+        querySql.append(" ORDER BY c.course_id ASC ");
 
         // 计算偏移量
         int offset = (page - 1) * size;
