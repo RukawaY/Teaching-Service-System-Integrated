@@ -5,6 +5,7 @@ public class AdminUserUpdateDTO {
     private String role;
     private String department;
     private String contact;
+    private Integer majorId; // 添加专业ID字段，可为空
     
     // 构造函数
     public AdminUserUpdateDTO() {
@@ -42,4 +43,12 @@ public class AdminUserUpdateDTO {
     public void setContact(String contact) {
         this.contact = contact;
     }
-} 
+
+    public Integer getMajorId() {
+        return majorId;
+    }
+
+    public void setMajorId(Integer majorId) {
+        this.majorId = majorId;
+    }
+}

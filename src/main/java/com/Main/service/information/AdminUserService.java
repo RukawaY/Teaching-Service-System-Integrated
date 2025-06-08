@@ -3,6 +3,7 @@ package com.Main.service.information;
 import com.Main.RowMapper.information.UserRowMapper;
 import com.Main.dto.information.PageResponseDTO;
 import com.Main.entity.information.User;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class AdminUserService {
@@ -147,11 +150,12 @@ public class AdminUserService {
      * @param role 角色
      * @param department 部门
      * @param contact 联系方式
+     * @param majorId 专业ID（可为空）
      * @return 创建的用户
      */
     public User createUser(String name, String account, String password, 
-                           String role, String department, String contact) {
-        logger.info("创建新用户: name={}, account={}, role={}", name, account, role);
+                           String role, String department, String contact, Integer majorId) {
+        logger.info("创建新用户: name={}, account={}, role={}, majorId={}", name, account, role, majorId);
         
         // 参数验证
         if (name == null || name.isEmpty()) {
@@ -190,8 +194,8 @@ public class AdminUserService {
         
         // 创建用户
         try {
-            String sql = "INSERT INTO User (name, account, password, role, department, contact) VALUES (?, ?, ?, ?, ?, ?)";
-            Object[] params = {name, account, password, role, department, contact};
+            String sql = "INSERT INTO User (name, account, password, role, department, contact, major_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            Object[] params = {name, account, password, role, department, contact, majorId};
             int result = jdbcTemplate.update(sql, params);
             
             if (result <= 0) {
@@ -227,12 +231,13 @@ public class AdminUserService {
      * @param role 角色
      * @param department 部门
      * @param contact 联系方式
+     * @param majorId 专业ID（可为空）
      * @return 更新后的用户
      */
     public User updateUser(int userId, String name, String role, 
-                           String department, String contact) {
-        logger.info("更新用户信息: userId={}, name={}, role={}, department={}, contact={}", 
-                userId, name, role, department, contact);
+                           String department, String contact, Integer majorId) {
+        logger.info("更新用户信息: userId={}, name={}, role={}, department={}, contact={}, majorId={}", 
+                userId, name, role, department, contact, majorId);
         
         // 验证用户是否存在
         try {
@@ -282,6 +287,17 @@ public class AdminUserService {
             }
             updateSql.append(" contact = ?");
             params.add(contact);
+            needComma = true;
+        }
+        
+        // 添加专业ID更新
+        if (majorId != null || majorId == null) { // 允许设置为NULL
+            if (needComma) {
+                updateSql.append(",");
+            }
+            updateSql.append(" major_id = ?");
+            params.add(majorId);
+            needComma = true;
         }
         
         // 如果没有需要更新的字段，直接返回用户信息
@@ -408,4 +424,64 @@ public class AdminUserService {
         
         return sb.toString();
     }
-} 
+
+    /**
+     * 批量创建用户
+     * @param jsonFile JSON文件路径
+     * @return 创建结果
+     */
+    public List<User> batchCreateUsers(File jsonFile) {
+        logger.info("批量创建用户: 文件路径={}", jsonFile.getAbsolutePath());
+        
+        try {
+            // 解析JSON文件
+            ObjectMapper objectMapper = new ObjectMapper();
+            List<Map<String, Object>> userList = objectMapper.readValue(jsonFile, List.class);
+            
+            List<User> createdUsers = new ArrayList<>();
+            
+            for (Map<String, Object> userData : userList) {
+                String name = String.valueOf(userData.get("name"));
+                String account = String.valueOf(userData.get("account"));
+                String password = String.valueOf(userData.get("password"));
+                String role = String.valueOf(userData.get("role"));
+                String department = userData.get("department") != null ? String.valueOf(userData.get("department")) : null;
+                String contact = userData.get("contact") != null ? String.valueOf(userData.get("contact")) : null;
+                
+                // 添加专业ID，可能为空
+                Integer majorId = null;
+                if (userData.containsKey("major_id") && userData.get("major_id") != null) {
+                    try {
+                        // 如果是数字，直接转换
+                        if (userData.get("major_id") instanceof Integer) {
+                            majorId = (Integer) userData.get("major_id");
+                        }
+                        // 如果是字符串，尝试解析为数字
+                        else if (userData.get("major_id") instanceof String) {
+                            majorId = Integer.parseInt((String) userData.get("major_id"));
+                        }
+                        // 其他类型的情况
+                        else {
+                            majorId = Integer.valueOf(String.valueOf(userData.get("major_id")));
+                        }
+                    } catch (NumberFormatException e) {
+                        logger.warn("解析major_id失败，使用null值: {}", userData.get("major_id"));
+                    }
+                }
+                
+                try {
+                    // 调用现有的创建用户方法，添加majorId参数
+                    User newUser = createUser(name, account, password, role, department, contact, majorId);
+                    createdUsers.add(newUser);
+                } catch (RuntimeException e) {
+                    logger.error("创建用户失败: {}", e.getMessage());
+                }
+            }
+            
+            return createdUsers;
+        } catch (Exception e) {
+            logger.error("批量创建用户失败: {}", e.getMessage());
+            throw new RuntimeException("批量创建用户失败：" + e.getMessage());
+        }
+    }
+}

@@ -94,7 +94,8 @@ public class TestPublishService {
                      "DATE_FORMAT(publish_time, '%Y-%m-%d %H:%i:%s') AS publish_time, " +
                      "DATE_FORMAT(deadline, '%Y-%m-%d %H:%i:%s') AS deadline, " +
                      "question_count, is_random, ratio " +
-                     "FROM TestPublish WHERE course_id = ?";
+                     "FROM TestPublish WHERE course_id = ? " +
+                     "AND (deadline <= NOW() OR deadline IS NULL)";
         return jdbcTemplate.queryForList(sql, courseId);
     }
 

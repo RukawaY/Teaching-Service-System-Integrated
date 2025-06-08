@@ -111,7 +111,7 @@
                 <span class="stat-label">及格率:</span>
                 <span class="stat-value">{{
                   passRate !== undefined && passRate !== null
-                    ? `${passRate}%`
+                    ? `${passRate.toFixed(2)}%`
                     : "--"
                 }}</span>
               </div>
@@ -119,7 +119,7 @@
                 <span class="stat-label">优秀率 (>=90):</span>
                 <span class="stat-value">{{
                   excellentRate !== undefined && excellentRate !== null
-                    ? `${excellentRate}%`
+                    ? `${excellentRate.toFixed(2)}%`
                     : "--"
                 }}</span>
               </div>
