@@ -242,6 +242,15 @@
             />
           </div>
           <div class="form-group">
+            <label for="modalUserMajorId">专业ID:</label>
+            <input
+              type="number"
+              id="modalUserMajorId"
+              v-model="modalUser.majorId"
+              placeholder="可选，输入专业ID"
+            />
+          </div>
+          <div class="form-group">
             <label for="modalUserEmail">手机号:</label>
             <input
               type="text"
@@ -316,6 +325,7 @@ type User = {
   department: string;
   contact: string;
   password: string;
+  majorId: number | null;
 };
 
 // 响应式数据
@@ -344,6 +354,7 @@ const modalUser = ref({
   department: "",
   contact: "",
   password: "",
+  majorId: null,
 });
 const modalShowPassword = ref(false);
 const jsonFileInput = ref(null);
@@ -486,6 +497,7 @@ const openUserModal = (mode = "add", userData: User) => {
       department: "",
       contact: "",
       password: "",
+      majorId: null,
     };
     modalShowPassword.value = true;
   } else if (mode === "edit" && userData) {

@@ -134,7 +134,8 @@ public class AdminUserController {
                     createDTO.getPassword(),
                     createDTO.getRole(),
                     createDTO.getDepartment(),
-                    createDTO.getContact()
+                    createDTO.getContact(),
+                    createDTO.getMajorId() // 添加专业ID
             );
             
             return ResponseEntity.ok(ApiResponseDTO.success("用户创建成功", newUser));
@@ -176,7 +177,8 @@ public class AdminUserController {
                     updateDTO.getName(),
                     updateDTO.getRole(),
                     updateDTO.getDepartment(),
-                    updateDTO.getContact()
+                    updateDTO.getContact(),
+                    updateDTO.getMajorId() // 添加专业ID
             );
             
             return ResponseEntity.ok(ApiResponseDTO.success("更新成功", updatedUser));
