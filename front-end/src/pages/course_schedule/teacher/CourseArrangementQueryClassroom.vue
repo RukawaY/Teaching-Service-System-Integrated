@@ -187,7 +187,7 @@ const handleQuery = async () => {
       params: {
         classroom_id: filterForm.classroomId,
         semester: filterForm.semester,
-        year: filterForm.sec_year
+        sec_year: filterForm.sec_year
       }
     });
     if (response.data && response.data.length > 0) {
