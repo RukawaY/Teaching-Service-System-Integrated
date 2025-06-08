@@ -8,33 +8,47 @@
           </div>
         </template>
 
-        <div class="search-bar">
+        <!-- 选课权限状态显示 - 只在失败时显示 -->
+        <div v-if="!hasPermitAccess && permitError" class="permit-warning">
+          <el-alert
+            title="选课权限获取失败"
+            :description="permitError"
+            type="error"
+            :closable="false"
+            show-icon
+          />
+        </div>
+
+        <div class="search-bar" :class="{ disabled: !hasPermitAccess }">
           <el-input
             v-model="searchQuery.course_name"
             placeholder="课程名称 (可筛选方案内课程)"
             clearable
             class="search-input"
+            :disabled="!hasPermitAccess"
           />
           <el-input
             v-model="searchQuery.teacher_name"
             placeholder="教师姓名"
             clearable
             class="search-input"
+            :disabled="!hasPermitAccess"
           />
           <el-input
             v-model="searchQuery.course_id"
             placeholder="课程ID (用于搜索)"
             clearable
             class="search-input"
+            :disabled="!hasPermitAccess"
           />
-          <el-checkbox v-model="searchQuery.need_available">
+          <el-checkbox v-model="searchQuery.need_available" :disabled="!hasPermitAccess">
             仅显示有余量课程
           </el-checkbox>
-          <el-button type="primary" @click="handleSearch" :loading="loading">搜索</el-button>
-          <el-button @click="resetSearch" :disabled="loading">重置</el-button>
+          <el-button type="primary" @click="handleSearch" :loading="loading" :disabled="!hasPermitAccess">搜索</el-button>
+          <el-button @click="resetSearch" :disabled="loading || !hasPermitAccess">重置</el-button>
         </div>
 
-        <el-table :data="courseList" style="font-size: 15px;" v-loading="loading">
+        <el-table :data="courseList" style="font-size: 15px;" v-loading="loading" :class="{ disabled: !hasPermitAccess }">
           <el-table-column prop="course_id" label="课程ID" width="80" />
           <el-table-column prop="section_id" label="教学班ID" width="90" />
           <el-table-column prop="course_name" label="课程名称" />
@@ -50,7 +64,8 @@
           <el-table-column label="选择" width="120">
             <template #default="scope">
               <el-checkbox
-                v-model="selectedCourses[scope.row.section_id]" :disabled="scope.row.available_capacity <= 0"
+                v-model="selectedCourses[scope.row.section_id]" 
+                :disabled="scope.row.available_capacity <= 0 || !hasPermitAccess"
               />
             </template>
           </el-table-column>
@@ -61,14 +76,14 @@
             type="primary"
             @click="submitCourses"
             :loading="submitting"
-            :disabled="!canSubmit || loading"
+            :disabled="!canSubmit || loading || !hasPermitAccess"
           >
             提交选课
           </el-button>
         </div>
       </el-card>
 
-      <el-empty v-if="showEmpty" description="暂无可选课程或未搜索到结果（请确认培养方案中是否有课程）" />
+      <el-empty v-if="showEmpty && hasPermitAccess" description="暂无可选课程或未搜索到结果（请确认培养方案中是否有课程）" />
     </div>
   </template>
 
@@ -76,6 +91,7 @@
   import { ref, computed, onMounted, inject } from 'vue';
   import { ElMessage, ElMessageBox } from 'element-plus';
   import { searchCourse, submitStudentCourseSelection } from '../../../api/course_selection/student';
+  import { useSelectionPermit, selectionStatus } from '../../../api/course_selection/selectionPermit';
 
   const courseList = ref([]); //
   const selectedCourses = ref({}); // 
@@ -90,6 +106,19 @@
   });
 
   const studentId = inject('user_id'); //
+
+  // 选课权限控制
+  const permitError = ref('');
+  const hasPermitAccess = ref(false);
+  
+  // 使用选课权限钩子
+  const { hasPermit, getErrorMessage, refreshCount } = useSelectionPermit(
+    Number(studentId.value), 
+    (errorMsg) => {
+      permitError.value = errorMsg;
+      ElMessage.error(`无法获取选课权限: ${errorMsg}`);
+    }
+  );
 
   /// Monday 1; Monday 2 ==> 周一1-2节
 // Tuesday 1; Tuesday 2; Tuesday 3 ==> 周二1-3节
@@ -154,7 +183,16 @@ const reflectTime = (time) => {
 
   onMounted(() => { // 
     if (studentId.value) {
-        fetchCourses(); // 
+        // 等待权限获取完成后再加载课程
+        setTimeout(() => {
+          if (hasPermit()) {
+            hasPermitAccess.value = true;
+            fetchCourses(); // 
+          } else {
+            hasPermitAccess.value = false;
+            ElMessage.warning('未获得选课权限，无法查看课程列表');
+          }
+        }, 1000); // 给权限获取一些时间
     }
   });
 
@@ -181,6 +219,10 @@ const reflectTime = (time) => {
     if (!studentId.value) {
       ElMessage.error('学生ID无效，无法提交选课！'); // 
       return; // 
+    }
+    if (!hasPermit()) {
+      ElMessage.error('没有选课权限，无法提交选课！');
+      return;
     }
     if (!canSubmit.value) { // 
       ElMessage.warning('请至少选择一门课程'); // 
@@ -276,5 +318,18 @@ const reflectTime = (time) => {
     margin-top: 20px; /* */ /*  */
     display: flex; /* */ /*  */
     justify-content: center; /* */ /*  */
+  }
+  
+  .permit-warning, .permit-info {
+    margin-bottom: 20px;
+  }
+  
+  .search-bar.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  
+  .el-table.disabled {
+    opacity: 0.6;
   }
   </style>
