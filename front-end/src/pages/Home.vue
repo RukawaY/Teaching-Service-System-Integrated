@@ -73,6 +73,34 @@ const router = useRouter();
 const is_homepage = inject('is_homepage');
 const user_name = inject('user_name');
 const currentDate = ref('');
+const favoritedCardIds = ref([]);
+
+const favoriteStorageKey = computed(() => {
+  if (user_name.value) {
+    return `favoritedCardIds_${user_name.value}`;
+  }
+  return null;
+});
+
+const loadFavorites = () => {
+  const key = favoriteStorageKey.value;
+  if (key) {
+    const savedFavorites = localStorage.getItem(key);
+    if (savedFavorites) {
+      try {
+        favoritedCardIds.value = JSON.parse(savedFavorites);
+      } catch (e) {
+        console.error('Failed to parse favorites from localStorage:', e);
+        favoritedCardIds.value = [];
+      }
+    } else {
+      favoritedCardIds.value = [];
+    }
+  } else {
+    // If there's no user key, clear the favorites list.
+    favoritedCardIds.value = [];
+  }
+};
 
 onMounted(() => {
   const today = new Date();
@@ -81,12 +109,11 @@ onMounted(() => {
   const day = String(today.getDate()).padStart(2, '0');
   currentDate.value = `${year}年${month}月${day}日`;
 
-  // Load favorites from localStorage
-  const savedFavorites = localStorage.getItem('favoritedCardIds');
-  if (savedFavorites) {
-    favoritedCardIds.value = JSON.parse(savedFavorites);
-  }
+  loadFavorites();
 });
+
+// When user changes, reload the favorites.
+watch(user_name, loadFavorites);
 
 // Define all navigation functions (assuming they are already defined below)
 // ... (goToProfile, goToQueryGrades, etc. functions should be here)
@@ -164,10 +191,12 @@ const modules = ref([
   // 'favorite' module is handled separately in the template
 ]);
 
-const favoritedCardIds = ref([]);
-
+// The 'favoritedCardIds' ref is now defined at the top of the script.
+// This watcher saves favorites to localStorage with a user-specific key.
 watch(favoritedCardIds, (newFavorites) => {
-  localStorage.setItem('favoritedCardIds', JSON.stringify(newFavorites));
+  if (favoriteStorageKey.value) {
+    localStorage.setItem(favoriteStorageKey.value, JSON.stringify(newFavorites));
+  }
 }, { deep: true });
 
 const toggleFavorite = (cardId) => {
