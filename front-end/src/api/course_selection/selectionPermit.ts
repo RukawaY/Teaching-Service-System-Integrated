@@ -100,12 +100,50 @@ export async function getSelectionCount(): Promise<void> {
   }
 }
 
+// 定时刷新选课计数的定时器
+let countRefreshTimer: number | null = null;
+
+// 开始定时刷新选课计数
+export function startCountRefresh(intervalMs: number = 30000): void {
+  if (countRefreshTimer) {
+    clearInterval(countRefreshTimer);
+  }
+  
+  countRefreshTimer = setInterval(() => {
+    if (selectionStatus.value.hasPermit) {
+      console.log('[选课权限] 定时刷新选课计数...');
+      getSelectionCount();
+    }
+  }, intervalMs);
+  
+  console.log(`[选课权限] 已启动定时刷新，间隔: ${intervalMs}ms`);
+}
+
+// 停止定时刷新
+export function stopCountRefresh(): void {
+  if (countRefreshTimer) {
+    clearInterval(countRefreshTimer);
+    countRefreshTimer = null;
+    console.log('[选课权限] 已停止定时刷新');
+  }
+}
+
 // 提供给组件使用的钩子函数，自动处理选课权限的获取和释放
 export function useSelectionPermit(studentId: number, onPermitFailed?: (errorMsg: string) => void) {
   // 组件挂载时自动获取选课权限
   onMounted(async () => {
     console.log(`[选课权限] 页面加载，准备为学生(${studentId})获取选课权限`);
     const success = await acquireSelectionPermit(studentId);
+    
+    // 如果获取权限成功，立即刷新一次计数，然后启动定时刷新
+    if (success) {
+      // 立即获取最新的计数数据
+      console.log(`[选课权限] 立即刷新选课计数以获取最新数据...`);
+      await getSelectionCount();
+      
+      // 启动定时刷新
+      startCountRefresh(30000); // 每30秒刷新一次
+    }
     
     // 如果获取权限失败且提供了失败回调，则执行回调
     if (!success && onPermitFailed && selectionStatus.value.errorMessage) {
@@ -117,6 +155,10 @@ export function useSelectionPermit(studentId: number, onPermitFailed?: (errorMsg
   // 组件卸载时自动释放选课权限
   onUnmounted(() => {
     console.log(`[选课权限] 页面卸载，准备释放学生(${studentId})的选课权限`);
+    
+    // 停止定时刷新
+    stopCountRefresh();
+    
     if (selectionStatus.value.hasPermit) {
       releaseSelectionPermit(studentId);
     }
@@ -134,6 +176,7 @@ export function useSelectionPermit(studentId: number, onPermitFailed?: (errorMsg
   // 返回选课权限状态，供内部使用
   return {
     hasPermit: () => selectionStatus.value.hasPermit,
-    getErrorMessage: () => selectionStatus.value.errorMessage
+    getErrorMessage: () => selectionStatus.value.errorMessage,
+    refreshCount: getSelectionCount // 提供手动刷新功能
   };
 } 
