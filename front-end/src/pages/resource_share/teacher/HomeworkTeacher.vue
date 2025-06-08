@@ -175,7 +175,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onMounted } from 'vue'
+import {ref, reactive, onMounted, inject, Ref} from 'vue'
 import { ElMessage } from 'element-plus'
 import { teacherAPI } from '../../../api/resource_share/teacher'
 
@@ -201,21 +201,30 @@ const assignRules = {
   requirements: [{ required: true, message: '请输入作业要求', trigger: 'blur' }]
 }
 
+const userId = inject<Ref<number | null>>('user_id', ref(null))
 const loading = ref(false)
 const page = ref(1)
 const pageSize = 10
 
 const fetchCourses = async () => {
+
   try {
-    const res = await teacherAPI.getTeacherCourses('张老师')
-    if (res.code === '200') {
-      allCourses.value = res.data.map((item: any) => ({
-        course_id: item.course_id ?? item,
-        course_name: item.course_name ?? item
+    const [coursesNameRes, coursesIdRes] = await Promise.all([
+      teacherAPI.getTeacherCourses(userId.value),
+      teacherAPI.getTeacherCoursesId(userId.value)
+    ]);
+      const courseNames = coursesNameRes.data;
+      const courseIds = coursesIdRes.data;
+
+      allCourses.value = courseNames.map((name, index) => ({
+        course_id: courseIds[index],
+        course_name: name
       }))
-    }
-  } catch (e) { allCourses.value = [] }
-}
+  } catch (e) {
+    allCourses.value = []; // 清空数组
+    ElMessage.error('请求课程列表时发生错误');
+  }
+};
 const fetchCourseHomeworkList = async () => {
   loading.value = true
   try {
@@ -259,6 +268,7 @@ const submitAssign = async () => {
     await assignFormRef.value.validate()
     assigning.value = true
     // POST时确保 weight 字段为数字
+    console.log('提交作业数据:', assignForm)
     await teacherAPI.assignHomework({ ...assignForm, weight: Number(assignForm.weight) })
     ElMessage.success('作业布置成功')
     assignDialogVisible.value = false
