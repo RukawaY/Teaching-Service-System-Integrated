@@ -206,6 +206,16 @@ export const getTeacherCourses = async (teacherId: number): Promise<ApiResponse<
   }
 };
 
+// 获取教师课程ID接口
+export const getTeacherCoursesId = async (teacherId: number): Promise<ApiResponse<number[]>> => {
+    try {
+        const response = await request.get(`/api/teacher/homework/courseId?teacherId=${teacherId}`);
+        return response.data;
+    } catch (error) {
+        throw new Error('获取教师课程ID列表失败');
+    }
+}
+
 // 处理考勤成绩接口（修正参数，与后端POST /api/attendance/process匹配）
 export const processAttendanceRecord = async (params: ProcessAttendanceParams): Promise<ApiResponse<boolean>> => {
   try {
@@ -227,6 +237,7 @@ export const teacherAPI = {
   assignHomework,
   getHomeworkWeight,
   getTeacherCourses,
+  getTeacherCoursesId,
   processAttendanceRecord,  
 };
 
