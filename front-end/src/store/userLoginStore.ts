@@ -62,6 +62,10 @@ export const useuserLoginStore = defineStore("userLogin", {
     //   } else await setLoginUserUnlogin();
     // }
 
+    async function setLoginUserAvatar(avatarPath: string) {
+      loginUser.value.avatar_path = avatarPath;
+    }
+
     async function setLoginUser(response: AxiosResponse<any, any>) {
       const res = response;
       try {
@@ -115,6 +119,6 @@ export const useuserLoginStore = defineStore("userLogin", {
       localStorage.removeItem("loginUser");
     }
 
-    return { loginUser, setLoginUser, setLoginUserUnlogin };
+    return { loginUser, setLoginUser, setLoginUserUnlogin, setLoginUserAvatar };
   },
 });
