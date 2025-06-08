@@ -101,7 +101,8 @@ public class CourseService {
         // 查询当前页数据
         List<ReturnCourseDTO> courses = new ArrayList<>();
         if (totalItems > 0) {
-            List<Course> courseList = jdbcTemplate.query(querySql.toString(), courseRowMapper, queryParams.toArray());
+            List<Course> courseList = jdbcTemplate.query(querySql.toString(), courseRowMapper, params.toArray());
+
 
             // 将 Course 对象转换为 ReturnCourseDTO 对象
             for (Course course : courseList) {
