@@ -269,17 +269,30 @@ public class LessonScheduler implements AutoManualScheduler, ClassroomManager {
         }
         logger.info("安排教师完成");
 
-        //安排教室
+        //安排教室 - 按课程分组，同一课程的所有section使用同一教室
         Map<Integer, boolean[][]> classroomTimeMap = new HashMap<>();
         List<Classroom> classrooms = queryClassrooms(new Classroom());
+        Map<Integer, Integer> courseClassroomMap = new HashMap<>();  // 记录每个课程分配的教室
+        
+        // 按课程ID对sections进行分组
+        Map<Integer, List<Section>> sectionsByCourse = new HashMap<>();
         for(Section section : sections){
+            sectionsByCourse.computeIfAbsent(section.getCourseId(), k -> new ArrayList<>()).add(section);
+        }
+        
+        // 为每个课程的所有section分配同一个教室
+        for(Map.Entry<Integer, List<Section>> entry : sectionsByCourse.entrySet()){
+            int courseId = entry.getKey();
+            List<Section> courseSections = entry.getValue();
             boolean successArrange = false;
-            String sectionCategory = getCourseCategory(section.getCourseId());
+            String sectionCategory = getCourseCategory(courseId);
+            
+            // 尝试为当前课程的所有section找到合适的教室
             for(Classroom classroom : classrooms){
-               
                 if(!classroom.getCategory().equals(sectionCategory)){
                     continue;
                 }
+                
                 if(!classroomTimeMap.containsKey(classroom.getId())){
                     classroomTimeMap.put(classroom.getId(), new boolean[8][20]);
                     boolean[][] classroomTime = classroomTimeMap.get(classroom.getId());
@@ -289,51 +302,83 @@ public class LessonScheduler implements AutoManualScheduler, ClassroomManager {
                         }
                     }
                 }
-                var dayStringList = section.getSecTime().split("; ");
+                
                 var classroomTime = classroomTimeMap.get(classroom.getId());
                 boolean conflict = false;
-                for(String dayString : dayStringList){
-                    //dayString: "Monday 1,2"
-                    //day: 1
-                    //timeList: "1,2"
-                    var day = Arrangement.Week.fromString(dayString.split(" ")[0]).getValue();
-                    var timeList = dayString.split(" ")[1].split(",");
-                    for(String time : timeList){
-                        if(classroomTime[day][Integer.parseInt(time)]){
-                            conflict = true;
-                            break;
-                        }
-                    }
-                    if(conflict){
-                        break;
-                    }
-                }
-                if(!conflict){
-                    section.setClassroomId(classroom.getId());
-                    section.setCapacity(classroom.getCapacity());
-                    section.setAvailableCapacity(classroom.getCapacity());
+                
+                // 检查当前教室是否能容纳该课程的所有section
+                for(Section section : courseSections){
+                    var dayStringList = section.getSecTime().split("; ");
                     for(String dayString : dayStringList){
                         var day = Arrangement.Week.fromString(dayString.split(" ")[0]).getValue();
                         var timeList = dayString.split(" ")[1].split(",");
                         for(String time : timeList){
-                            classroomTime[day][Integer.parseInt(time)] = true;
+                            if(classroomTime[day][Integer.parseInt(time)]){
+                                conflict = true;
+                                break;
+                            }
+                        }
+                        if(conflict) break;
+                    }
+                    if(conflict) break;
+                }
+                
+                // 如果没有冲突，则为所有section分配该教室
+                if(!conflict){
+                    for(Section section : courseSections){
+                        section.setClassroomId(classroom.getId());
+                        section.setCapacity(classroom.getCapacity());
+                        section.setAvailableCapacity(classroom.getCapacity());
+                        
+                        // 标记时间为已占用
+                        var dayStringList = section.getSecTime().split("; ");
+                        for(String dayString : dayStringList){
+                            var day = Arrangement.Week.fromString(dayString.split(" ")[0]).getValue();
+                            var timeList = dayString.split(" ")[1].split(",");
+                            for(String time : timeList){
+                                classroomTime[day][Integer.parseInt(time)] = true;
+                            }
                         }
                     }
+                    courseClassroomMap.put(courseId, classroom.getId());
                     successArrange = true;
                     break;
                 }
-            } 
+            }
+            
             if(!successArrange){
-                throw new RuntimeException("无法安排课程，课程id：" + section.getCourseId() + "教室冲突");
+                throw new RuntimeException("无法安排课程，课程id：" + courseId + "教室冲突");
             }
         }
         logger.info("安排教室完成");
         
-        // 不合并section，因为不同的section可能使用不同的教室
-        // 直接返回所有section，避免教室冲突问题
-        logger.info("保持独立的section记录完成");
+        // 合并相同课程号、相同开课学年和学期的 section
+        Map<String, List<Section>> sectionGroups = new HashMap<>();
+        for (Section section : sections) {
+            String key = section.getCourseId() + "_" + section.getSemester() + "_" + section.getSecYear();
+            sectionGroups.computeIfAbsent(key, k -> new ArrayList<>()).add(section);
+        }
         
-        return sections;
+        List<Section> mergedSections = new ArrayList<>();
+        for (List<Section> group : sectionGroups.values()) {
+            if (group.size() == 1) {
+                mergedSections.add(group.get(0));
+            } else {
+                // 合并多个 section
+                Section mergedSection = group.get(0); // 使用第一个作为基础
+                StringBuilder mergedTime = new StringBuilder(mergedSection.getSecTime());
+                
+                for (int i = 1; i < group.size(); i++) {
+                    mergedTime.append("; ").append(group.get(i).getSecTime());
+                }
+                
+                mergedSection.setSecTime(mergedTime.toString());
+                mergedSections.add(mergedSection);
+            }
+        }
+        logger.info("合并相同课程的section完成");
+        
+        return mergedSections;
     }
 
     private void addSections(List<Section> sections){
