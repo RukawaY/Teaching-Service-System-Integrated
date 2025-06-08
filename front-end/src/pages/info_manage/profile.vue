@@ -185,7 +185,13 @@ const fetchUserProfile = async () => {
   try {
     const response = await getCurrentUserProfile();
     studentProfileData.value = response.data.data;
-    studentProfileData.value.role = "学生";
+    if (studentProfileData.value.role == "s") {
+      studentProfileData.value.role = "学生";
+    } else if (studentProfileData.value.role == "t") {
+      studentProfileData.value.role = "教师";
+    } else if (studentProfileData.value.role == "a") {
+      studentProfileData.value.role = "管理员";
+    }
   } catch (error) {
     showNotification("获取用户信息失败，请稍后重试。", "error");
   }
@@ -321,6 +327,7 @@ const handleAvatarUpload = async (event: Event) => {
       console.log("头像上传成功:", response);
       // 假设响应中包含更新后的头像路径
       studentProfileData.value.avatarPath = response.data.data.avatarPath;
+      loginUserStore.setLoginUserAvatar(response.data.data.avatarPath);
     } catch (error) {
       showNotification("头像上传失败，请稍后重试。", "error");
       console.error("头像上传失败:", error);
