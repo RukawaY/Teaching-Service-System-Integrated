@@ -3,6 +3,7 @@ package com.Main.service.information;
 import com.Main.RowMapper.information.UserRowMapper;
 import com.Main.dto.information.PageResponseDTO;
 import com.Main.entity.information.User;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class AdminUserService {
@@ -408,4 +411,43 @@ public class AdminUserService {
         
         return sb.toString();
     }
-} 
+
+    /**
+     * 批量创建用户
+     * @param jsonFile JSON文件路径
+     * @return 创建结果
+     */
+    public List<User> batchCreateUsers(File jsonFile) {
+        logger.info("批量创建用户: 文件路径={}", jsonFile.getAbsolutePath());
+        
+        try {
+            // 解析JSON文件
+            ObjectMapper objectMapper = new ObjectMapper();
+            List<Map<String, String>> userList = objectMapper.readValue(jsonFile, List.class);
+            
+            List<User> createdUsers = new ArrayList<>();
+            
+            for (Map<String, String> userData : userList) {
+                String name = userData.get("name");
+                String account = userData.get("account");
+                String password = userData.get("password");
+                String role = userData.get("role");
+                String department = userData.get("department");
+                String contact = userData.get("contact");
+                
+                try {
+                    // 调用现有的创建用户方法
+                    User newUser = createUser(name, account, password, role, department, contact);
+                    createdUsers.add(newUser);
+                } catch (RuntimeException e) {
+                    logger.error("创建用户失败: {}", e.getMessage());
+                }
+            }
+            
+            return createdUsers;
+        } catch (Exception e) {
+            logger.error("批量创建用户失败: {}", e.getMessage());
+            throw new RuntimeException("批量创建用户失败：" + e.getMessage());
+        }
+    }
+}

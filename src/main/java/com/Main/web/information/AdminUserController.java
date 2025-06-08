@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.File;
+import java.util.List;
 
 @RestController
 @RequestMapping("/information/api/v1/admin")
@@ -262,4 +265,38 @@ public class AdminUserController {
             return ResponseEntity.ok(ApiResponseDTO.error(500, "服务器内部错误"));
         }
     }
-} 
+
+    /**
+     * 批量创建用户
+     * @param file JSON文件
+     * @param request HTTP请求对象
+     * @return 创建的用户列表
+     */
+    @PostMapping("/users/batch-create")
+    public ResponseEntity<ApiResponseDTO<List<User>>> batchCreateUsers(
+            @RequestParam("file") MultipartFile file,
+            HttpServletRequest request) {
+        try {
+            // 获取当前用户角色（由JWT拦截器设置）
+            String userRole = (String) request.getAttribute("userRole");
+
+            // 检查权限
+            if (!adminUserService.isAdmin(userRole)) {
+                logger.warn("非管理员尝试批量创建用户: userRole={}", userRole);
+                return ResponseEntity.ok(ApiResponseDTO.error(403, "权限不足"));
+            }
+
+            // 将文件保存到临时目录
+            File tempFile = File.createTempFile("users", ".json");
+            file.transferTo(tempFile);
+
+            // 调用服务层批量创建用户
+            List<User> createdUsers = adminUserService.batchCreateUsers(tempFile);
+
+            return ResponseEntity.ok(ApiResponseDTO.success("批量创建用户成功", createdUsers));
+        } catch (Exception e) {
+            logger.error("批量创建用户失败: {}", e.getMessage());
+            return ResponseEntity.ok(ApiResponseDTO.error(500, "服务器内部错误: " + e.getMessage()));
+        }
+    }
+}

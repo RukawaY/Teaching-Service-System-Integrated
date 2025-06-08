@@ -1,4 +1,5 @@
 import apiClient from "./request";
+import axios from "axios";
 
 // 获取用户列表接口
 export const getUsers = async (params: any) => {
@@ -18,7 +19,17 @@ export const createUser = async (data: any) => {
   });
 };
 
-// 批量导入用户接口 未实现
+// 批量导入用户接口
+export const batchCreateUsers = async (formData: FormData) => {
+  return await apiClient.request({
+    url: "admin/users/batch-create",
+    method: "POST",
+    data: formData,
+    headers: {
+      "Content-Type": "multipart/form-data"
+    }
+  });
+};
 
 // 获取指定用户信息
 export const getUsersById = async (user_id: string) => {

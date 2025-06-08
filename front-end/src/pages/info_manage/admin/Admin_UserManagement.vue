@@ -68,6 +68,21 @@
               >
                 <FontAwesomeIcon icon="fas fa-user-plus" /> 添加新用户
               </button>
+              <button
+                type="button"
+                class="btn btn-warning"
+                @click="triggerFileUpload"
+              >
+                <FontAwesomeIcon icon="fas fa-upload" /> 批量上传用户
+              </button>
+              <input
+                type="file"
+                id="jsonFileInput"
+                ref="jsonFileInput"
+                accept=".json"
+                style="display: none"
+                @change="handleFileUpload"
+              />
             </div>
           </form>
         </div>
@@ -290,7 +305,7 @@
 import { ref, onMounted } from "vue";
 import { useuserLoginStore } from "../../../store/userLoginStore";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { getUsers, createUser, updateUser, deleteUser } from "../../../api/info_manage/admin";
+import { getUsers, createUser, updateUser, deleteUser, batchCreateUsers } from "../../../api/info_manage/admin";
 import { useRouter } from "vue-router";
 
 type User = {
@@ -331,6 +346,7 @@ const modalUser = ref({
   password: "",
 });
 const modalShowPassword = ref(false);
+const jsonFileInput = ref(null);
 
 // 切换用户下拉菜单
 const toggleUserDropdown = () => {
@@ -609,6 +625,35 @@ const handleDeleteUser = async (userId: string, userName: string) => {
 //     }
 //   }
 // };
+
+// 触发文件上传
+const triggerFileUpload = () => {
+  jsonFileInput.value?.click();
+};
+
+// 处理文件上传
+const handleFileUpload = async (event: Event) => {
+  const file = (event.target as HTMLInputElement)?.files?.[0];
+  if (!file) {
+    showMainNotification("请选择一个JSON文件", "error");
+    return;
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await batchCreateUsers(formData);
+    showMainNotification(
+      `成功批量添加 ${response.data.data.length} 个用户。`,
+      "success"
+    );
+    await fetchUsers();
+  } catch (error) {
+    console.error("批量上传用户失败:", error);
+    showMainNotification("批量上传用户失败", "error");
+  }
+};
 
 // 上一页
 const prevPage = () => {
