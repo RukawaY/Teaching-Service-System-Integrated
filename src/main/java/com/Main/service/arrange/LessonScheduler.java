@@ -329,33 +329,11 @@ public class LessonScheduler implements AutoManualScheduler, ClassroomManager {
         }
         logger.info("安排教室完成");
         
-        // 合并相同课程号、相同开课学年和学期的 section
-        Map<String, List<Section>> sectionGroups = new HashMap<>();
-        for (Section section : sections) {
-            String key = section.getCourseId() + "_" + section.getSemester() + "_" + section.getSecYear();
-            sectionGroups.computeIfAbsent(key, k -> new ArrayList<>()).add(section);
-        }
+        // 不合并section，因为不同的section可能使用不同的教室
+        // 直接返回所有section，避免教室冲突问题
+        logger.info("保持独立的section记录完成");
         
-        List<Section> mergedSections = new ArrayList<>();
-        for (List<Section> group : sectionGroups.values()) {
-            if (group.size() == 1) {
-                mergedSections.add(group.get(0));
-            } else {
-                // 合并多个 section
-                Section mergedSection = group.get(0); // 使用第一个作为基础
-                StringBuilder mergedTime = new StringBuilder(mergedSection.getSecTime());
-                
-                for (int i = 1; i < group.size(); i++) {
-                    mergedTime.append("; ").append(group.get(i).getSecTime());
-                }
-                
-                mergedSection.setSecTime(mergedTime.toString());
-                mergedSections.add(mergedSection);
-            }
-        }
-        logger.info("合并相同课程的section完成");
-        
-        return mergedSections;
+        return sections;
     }
 
     private void addSections(List<Section> sections){
